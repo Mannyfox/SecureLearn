@@ -41,7 +41,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
-import { useFirestore, setDocumentNonBlocking } from "@/firebase"
+import { useFirestore } from "@/firebase"
 import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore"
 
 
@@ -58,6 +58,11 @@ export function QuestionEditor({ modules: initialModules, policyTextForGeneratio
   const [isGenerating, setIsGenerating] = useState(false);
   const [targetModule, setTargetModule] = useState<string | null>(null);
   const { toast } = useToast();
+
+  // Update internal state if the prop changes (e.g., after seeding DB)
+  useState(() => {
+    setModules(initialModules);
+  });
 
   const handleAddOrUpdateQuestion = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -83,12 +88,17 @@ export function QuestionEditor({ modules: initialModules, policyTextForGeneratio
 
     try {
       if (editingQuestion) {
-        // This is complex. You need to remove the old question and add the new one.
-        // For simplicity, we'll just update in place if the ID matches.
-        // A better way would be a server-side transaction.
+        // To update an item in an array, we must remove the old and add the new.
         const moduleDoc = modules.find(m => m.id === moduleId);
-        const updatedQuestions = moduleDoc?.questions.map(q => q.id === questionData.id ? questionData : q) || [];
-        await updateDoc(moduleRef, { questions: updatedQuestions });
+        if (moduleDoc) {
+          const questionToRemove = moduleDoc.questions.find(q => q.id === editingQuestion.question.id);
+          // First, remove the old question
+          if (questionToRemove) {
+            await updateDoc(moduleRef, { questions: arrayRemove(questionToRemove) });
+          }
+          // Then, add the updated question
+          await updateDoc(moduleRef, { questions: arrayUnion(questionData) });
+        }
       } else {
         await updateDoc(moduleRef, {
           questions: arrayUnion(questionData)
@@ -99,21 +109,8 @@ export function QuestionEditor({ modules: initialModules, policyTextForGeneratio
         title: "Erfolg!",
         description: "Die Frage wurde gespeichert.",
       });
-      // You'd typically refetch data here. For now, we manually update state.
-      setModules(prevModules => prevModules.map(m => {
-        if (m.id === moduleId) {
-          let newQuestions: Question[];
-          if(editingQuestion) {
-            newQuestions = m.questions.map(q => q.id === questionData.id ? questionData : q);
-          } else {
-            newQuestions = [...m.questions, questionData];
-          }
-          return { ...m, questions: newQuestions };
-        }
-        return m;
-      }));
-
-
+      // The UI will update automatically because useCollection will refetch.
+      // Manual state update is no longer needed.
     } catch(error) {
        console.error("Error saving question:", error);
        toast({ variant: "destructive", title: "Fehler", description: "Frage konnte nicht gespeichert werden." });
@@ -135,13 +132,7 @@ export function QuestionEditor({ modules: initialModules, policyTextForGeneratio
         questions: arrayRemove(questionToRemove)
       });
        toast({ title: "Gelöscht", description: "Die Frage wurde entfernt." });
-       // Manual state update
-       setModules(prevModules => prevModules.map(m => {
-        if (m.id === moduleId) {
-          return { ...m, questions: m.questions.filter(q => q.id !== questionId) };
-        }
-        return m;
-      }));
+       // The UI will update automatically.
     } catch(error) {
       console.error("Error deleting question:", error);
       toast({ variant: "destructive", title: "Fehler", description: "Frage konnte nicht gelöscht werden." });
@@ -169,17 +160,11 @@ export function QuestionEditor({ modules: initialModules, policyTextForGeneratio
         questions: arrayUnion(...questionsWithIds)
       });
       
-      setModules(prevModules => prevModules.map(m => {
-        if (m.id === targetModule) {
-          return { ...m, questions: [...m.questions, ...questionsWithIds] };
-        }
-        return m;
-      }));
-
       toast({
         title: "Fragen generiert!",
         description: `${result.questions.length} neue Fragen wurden für das ausgewählte Modul erstellt und gespeichert.`,
       })
+      // UI will update via useCollection listener.
 
     } catch (error) {
       console.error("Error generating questions:", error)
@@ -245,7 +230,7 @@ export function QuestionEditor({ modules: initialModules, policyTextForGeneratio
               <AccordionTrigger className="text-lg font-medium">{module.title}</AccordionTrigger>
               <AccordionContent>
                 <div className="mb-4 flex justify-end">
-                  <Dialog open={isDialogOpen && editingQuestion?.moduleId !== module.id} onOpenChange={(isOpen) => { if (!isOpen) setEditingQuestion(null); setIsDialogOpen(isOpen); }}>
+                  <Dialog open={isDialogOpen} onOpenChange={(isOpen) => { if (!isOpen) setEditingQuestion(null); setIsDialogOpen(isOpen); }}>
                     <DialogTrigger asChild>
                       <Button onClick={() => { setEditingQuestion(null); setTargetModule(module.id); setIsDialogOpen(true); }}>
                         <PlusCircle className="mr-2 h-4 w-4" />
@@ -281,7 +266,7 @@ export function QuestionEditor({ modules: initialModules, policyTextForGeneratio
                             <Label htmlFor="correctAnswer" className="text-right">Korrekt (1-3)</Label>
                             <Input id="correctAnswer" name="correctAnswer" type="number" min="1" max="3" defaultValue={editingQuestion ? editingQuestion.question.correctAnswerIndex + 1 : 1} className="col-span-3" />
                           </div>
-                           <div className="grid gridcols-4 items-center gap-4">
+                           <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="explanation" className="text-right">Erklärung</Label>
                             <Textarea id="explanation" name="explanation" defaultValue={editingQuestion?.question.explanation} className="col-span-3" />
                           </div>
@@ -305,7 +290,7 @@ export function QuestionEditor({ modules: initialModules, policyTextForGeneratio
                       <TableRow key={q.id}>
                         <TableCell className="font-medium">{q.questionText}</TableCell>
                         <TableCell className="text-right">
-                          <Button variant="ghost" size="icon" onClick={() => { setEditingQuestion({moduleId: module.id, question: q}); setIsDialogOpen(true); }}>
+                          <Button variant="ghost" size="icon" onClick={() => { setEditingQuestion({moduleId: module.id, question: q}); setTargetModule(module.id); setIsDialogOpen(true); }}>
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => handleDeleteQuestion(module.id, q.id)}>
