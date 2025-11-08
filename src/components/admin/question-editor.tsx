@@ -43,15 +43,16 @@ import {
 
 
 interface QuestionEditorProps {
-  modules: Module[]
+  modules: Module[];
+  initialPolicyText?: string;
 }
 
-export function QuestionEditor({ modules: initialModules }: QuestionEditorProps) {
+export function QuestionEditor({ modules: initialModules, initialPolicyText = "" }: QuestionEditorProps) {
   const [modules, setModules] = useState(initialModules)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingQuestion, setEditingQuestion] = useState<{moduleId: string, question: Question} | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
-  const [policyText, setPolicyText] = useState("")
+  const [policyText, setPolicyText] = useState(initialPolicyText)
   const [targetModule, setTargetModule] = useState<string | null>(null)
   const { toast } = useToast()
 
@@ -90,7 +91,7 @@ export function QuestionEditor({ modules: initialModules }: QuestionEditorProps)
         title: "Fragen generiert!",
         description: `${result.questions.length} neue Fragen wurden erstellt. (Simulation - wird nicht gespeichert)`,
       })
-      setPolicyText("")
+      // We don't clear the policy text anymore so user can re-generate for other modules.
 
     } catch (error) {
       console.error("Error generating questions:", error)
@@ -111,7 +112,7 @@ export function QuestionEditor({ modules: initialModules }: QuestionEditorProps)
         <CardHeader>
           <CardTitle>Fragen aus Richtlinien generieren (KI)</CardTitle>
           <CardDescription>
-            Fügen Sie den Inhalt Ihrer Richtlinien in das Textfeld ein, wählen Sie das Zielmodul und lassen Sie die KI automatisch Quizfragen erstellen.
+            Fügen Sie den Inhalt Ihrer im Tab "Richtlinien" gespeicherten Richtlinien ein, wählen Sie das Zielmodul und lassen Sie die KI automatisch Quizfragen erstellen.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

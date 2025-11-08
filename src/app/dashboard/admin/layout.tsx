@@ -7,6 +7,7 @@ const adminTabs = [
     { value: "overview", label: "Übersicht", href: "/dashboard/admin/overview" },
     { value: "users", label: "Benutzerverwaltung", href: "/dashboard/admin/users" },
     { value: "questions", label: "Fragen-CMS", href: "/dashboard/admin/questions" },
+    { value: "guidelines", label: "Richtlinien", href: "/dashboard/admin/guidelines" },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
