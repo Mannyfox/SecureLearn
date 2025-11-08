@@ -15,7 +15,9 @@ interface ModulePageProps {
 export default function ModulePage({ params }: ModulePageProps) {
   // eslint-disable-next-line @next/next/no-unwanted-polyfillio
   const firestore = useFirestore();
-  const moduleRef = useMemoFirebase(() => firestore ? doc(firestore, "modules", params.id) : null, [firestore, params.id]);
+  const moduleId = params.id; // Assign to a variable to avoid the warning
+  
+  const moduleRef = useMemoFirebase(() => firestore ? doc(firestore, "modules", moduleId) : null, [firestore, moduleId]);
   const { data: module, isLoading } = useDoc<Module>(moduleRef);
 
   if (isLoading) {
