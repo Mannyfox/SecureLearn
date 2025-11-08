@@ -1,3 +1,46 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "phishing-awareness",
+      "description": "An image representing phishing awareness, like a fish hook near a computer.",
+      "imageUrl": "https://images.unsplash.com/photo-1614064641938-3bbee52942c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwaGlzaGluZyUyMHNlY3VyaXR5fGVufDB8fHx8MTc2MjU5NzUyNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "phishing security"
+    },
+    {
+      "id": "password-security",
+      "description": "An image representing password security, like a strong lock or a key.",
+      "imageUrl": "https://images.unsplash.com/photo-1697382608786-bcf4c113b86e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwYXNzd29yZCUyMGxvY2t8ZW58MHx8fHwxNzYyNTk3NTI2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "password lock"
+    },
+    {
+      "id": "data-protection",
+      "description": "An image representing data protection, like a shield protecting data.",
+      "imageUrl": "https://images.unsplash.com/photo-1633265486064-086b219458ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkYXRhJTIwcHJvdGVjdGlvbnxlbnwwfHx8fDE3NjI1ODc3NDl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "data protection"
+    },
+    {
+      "id": "social-engineering",
+      "description": "An image representing social engineering, like people talking with hidden masks.",
+      "imageUrl": "https://images.unsplash.com/photo-1762158008280-3dcb1d1cbd99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzb2NpYWwlMjBpbnRlcmFjdGlvbnxlbnwwfHx8fDE3NjI1OTc1MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "social interaction"
+    },
+    {
+      "id": "physical-security",
+      "description": "An image representing physical security, like a secure server room.",
+      "imageUrl": "https://images.unsplash.com/photo-1691435828932-911a7801adfb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxzZXJ2ZXIlMjByb29tfGVufDB8fHx8MTc2MjU5Njk2MXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "server room"
+    },
+    {
+      "id": "incident-response",
+      "description": "An image representing incident response, like a fire alarm or emergency plan.",
+      "imageUrl": "https://images.unsplash.com/photo-1606560180292-6c80f7d724ac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxlbWVyZ2VuY3klMjBwbGFufGVufDB8fHx8MTc2MjU5NzUyNnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "emergency plan"
+    },
+    {
+      "id": "apfelkiste-logo",
+      "description": "The logo for Apfelkiste",
+      "imageUrl": "https://images.unsplash.com/photo-1685392485351-f7d93de2231e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxhcHBsZSUyMGxvZ298ZW58MHx8fHwxNzYyNTk1NjQyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "apple logo"
+    }
+  ]
 }
