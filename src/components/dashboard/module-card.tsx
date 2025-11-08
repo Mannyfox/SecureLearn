@@ -67,8 +67,8 @@ export function ModuleCard({ module, progress }: ModuleCardProps) {
           )}
         </div>
       </CardHeader>
-      <CardContent className="flex-grow p-6 space-y-2">
-        <div className="flex justify-between items-start">
+      <CardContent className="flex-grow p-6 space-y-3">
+        <div className="space-y-1">
             <CardTitle className="text-xl font-headline leading-snug">{module.title}</CardTitle>
             {badge}
         </div>
