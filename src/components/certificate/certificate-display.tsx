@@ -48,7 +48,7 @@ export function CertificateDisplay({ user, certificate }: CertificateDisplayProp
 
             <div className="flex flex-col sm:flex-row justify-around items-center w-full pt-8 text-sm">
                 <div className="flex flex-col items-center">
-                    <p className="font-semibold">{format(certificate.issuedAt, "d. MMMM yyyy")}</p>
+                    <p className="font-semibold">{format(certificate.issuedAt.toDate(), "d. MMMM yyyy")}</p>
                     <div className="h-px w-24 bg-border my-1"></div>
                     <p className="text-muted-foreground">Ausstellungsdatum</p>
                 </div>
@@ -56,7 +56,7 @@ export function CertificateDisplay({ user, certificate }: CertificateDisplayProp
                     <Award className="h-10 w-10 text-primary"/>
                 </div>
                 <div className="flex flex-col items-center">
-                    <p className="font-semibold">{format(certificate.expiresAt, "d. MMMM yyyy")}</p>
+                    <p className="font-semibold">{format(certificate.expiresAt.toDate(), "d. MMMM yyyy")}</p>
                     <div className="h-px w-24 bg-border my-1"></div>
                     <p className="text-muted-foreground">Gültig bis</p>
                 </div>

@@ -32,29 +32,35 @@ export function UsersTableClient({ users, progress }: UsersTableClientProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [departmentFilter, setDepartmentFilter] = useState("all")
 
+  // This logic is now mostly for demonstration as fetching all subcollections is complex on the client.
   const getOverallStatus = (userId: string) => {
     const userProgress = progress.filter(p => p.userId === userId)
     if (userProgress.length === 0) return <Badge variant="secondary">Nicht begonnen</Badge>
-    if (userProgress.some(p => p.status === 'Retake Required')) return <Badge variant="destructive">Wiederholung erforderlich</Badge>
-    if (userProgress.every(p => p.status === 'Completed')) return <Badge className="bg-green-600 text-white">Abgeschlossen</Badge>
+    if (userProgress.some(p => p.status === 'Wiederholung erforderlich')) return <Badge variant="destructive">Wiederholung erforderlich</Badge>
+    // This part is tricky without knowing total modules
+    // if (userProgress.every(p => p.status === 'Abgeschlossen')) return <Badge className="bg-green-600 text-white">Abgeschlossen</Badge>
     return <Badge variant="outline">In Bearbeitung</Badge>
   }
   
   const getLatestCompletionDate = (userId: string) => {
-    const userProgress = progress.filter(p => p.userId === userId && p.status === 'Completed' && p.completedAt)
+    const userProgress = progress.filter(p => p.userId === userId && p.status === 'Abgeschlossen' && p.completedAt)
     if (userProgress.length === 0) return '-'
 
     const latestDate = userProgress.reduce((latest, p) => {
-        return isBefore(latest, p.completedAt!) ? p.completedAt! : latest
-    }, userProgress[0].completedAt!)
+        const pDate = p.completedAt?.toDate();
+        if (!pDate) return latest;
+        return isBefore(latest, pDate) ? pDate : latest
+    }, new Date(0))
+
+    if (latestDate.getFullYear() === 1970) return '-';
 
     return format(latestDate, "dd.MM.yyyy")
   }
 
   const filteredUsers = users
     .filter((user) =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
+      user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email?.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .filter((user) =>
       departmentFilter === "all" ? true : user.department === departmentFilter
@@ -108,9 +114,9 @@ export function UsersTableClient({ users, progress }: UsersTableClientProps) {
           <TableBody>
             {filteredUsers.map((user) => (
               <TableRow key={user.id}>
-                <TableCell className="font-medium">{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.department}</TableCell>
+                <TableCell className="font-medium">{user.name || 'N/A'}</TableCell>
+                <TableCell>{user.email || 'N/A'}</TableCell>
+                <TableCell>{user.department || 'N/A'}</TableCell>
                 <TableCell>{getOverallStatus(user.id)}</TableCell>
                 <TableCell>{getLatestCompletionDate(user.id)}</TableCell>
               </TableRow>

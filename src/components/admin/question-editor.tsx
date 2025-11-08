@@ -41,6 +41,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
+import { useFirestore, setDocumentNonBlocking } from "@/firebase"
+import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore"
 
 
 interface QuestionEditorProps {
@@ -49,28 +51,105 @@ interface QuestionEditorProps {
 }
 
 export function QuestionEditor({ modules: initialModules, policyTextForGeneration }: QuestionEditorProps) {
-  const [modules, setModules] = useState(initialModules)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingQuestion, setEditingQuestion] = useState<{moduleId: string, question: Question} | null>(null)
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [targetModule, setTargetModule] = useState<string | null>(null)
-  const { toast } = useToast()
+  const firestore = useFirestore();
+  const [modules, setModules] = useState(initialModules);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingQuestion, setEditingQuestion] = useState<{moduleId: string, question: Question} | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [targetModule, setTargetModule] = useState<string | null>(null);
+  const { toast } = useToast();
 
-  const handleAddOrUpdateQuestion = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    // In a real app, this would be a server action.
-    console.log("Form submitted, data would be saved here.")
-    toast({
-      title: "Erfolg!",
-      description: "Die Frage wurde gespeichert. (Simulation)",
-    });
+  const handleAddOrUpdateQuestion = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!firestore) return;
+    
+    const formData = new FormData(e.currentTarget);
+    const moduleId = editingQuestion?.moduleId || targetModule;
+    if (!moduleId) return;
+
+    const questionData: Question = {
+      id: editingQuestion?.question.id || `q${Date.now()}`,
+      questionText: formData.get('questionText') as string,
+      options: [
+        formData.get('option1') as string,
+        formData.get('option2') as string,
+        formData.get('option3') as string,
+      ],
+      correctAnswerIndex: parseInt(formData.get('correctAnswer') as string) - 1,
+      explanation: formData.get('explanation') as string,
+    };
+
+    const moduleRef = doc(firestore, "modules", moduleId);
+
+    try {
+      if (editingQuestion) {
+        // This is complex. You need to remove the old question and add the new one.
+        // For simplicity, we'll just update in place if the ID matches.
+        // A better way would be a server-side transaction.
+        const moduleDoc = modules.find(m => m.id === moduleId);
+        const updatedQuestions = moduleDoc?.questions.map(q => q.id === questionData.id ? questionData : q) || [];
+        await updateDoc(moduleRef, { questions: updatedQuestions });
+      } else {
+        await updateDoc(moduleRef, {
+          questions: arrayUnion(questionData)
+        });
+      }
+
+      toast({
+        title: "Erfolg!",
+        description: "Die Frage wurde gespeichert.",
+      });
+      // You'd typically refetch data here. For now, we manually update state.
+      setModules(prevModules => prevModules.map(m => {
+        if (m.id === moduleId) {
+          let newQuestions: Question[];
+          if(editingQuestion) {
+            newQuestions = m.questions.map(q => q.id === questionData.id ? questionData : q);
+          } else {
+            newQuestions = [...m.questions, questionData];
+          }
+          return { ...m, questions: newQuestions };
+        }
+        return m;
+      }));
+
+
+    } catch(error) {
+       console.error("Error saving question:", error);
+       toast({ variant: "destructive", title: "Fehler", description: "Frage konnte nicht gespeichert werden." });
+    }
+
     setIsDialogOpen(false)
     setEditingQuestion(null)
-    // Here you would refresh the data from the server.
+  }
+  
+  const handleDeleteQuestion = async (moduleId: string, questionId: string) => {
+    if (!firestore) return;
+    const moduleRef = doc(firestore, "modules", moduleId);
+    const questionToRemove = modules.find(m => m.id === moduleId)?.questions.find(q => q.id === questionId);
+    
+    if (!questionToRemove) return;
+
+    try {
+      await updateDoc(moduleRef, {
+        questions: arrayRemove(questionToRemove)
+      });
+       toast({ title: "Gelöscht", description: "Die Frage wurde entfernt." });
+       // Manual state update
+       setModules(prevModules => prevModules.map(m => {
+        if (m.id === moduleId) {
+          return { ...m, questions: m.questions.filter(q => q.id !== questionId) };
+        }
+        return m;
+      }));
+    } catch(error) {
+      console.error("Error deleting question:", error);
+      toast({ variant: "destructive", title: "Fehler", description: "Frage konnte nicht gelöscht werden." });
+    }
   }
 
   const handleGenerateQuestions = async () => {
-    if (!policyTextForGeneration || !targetModule) {
+    if (!policyTextForGeneration || !targetModule || !firestore) {
       toast({
         variant: "destructive",
         title: "Fehler",
@@ -82,14 +161,24 @@ export function QuestionEditor({ modules: initialModules, policyTextForGeneratio
     setIsGenerating(true)
     try {
       const result = await generateQuestionsFromText({ documentContent: policyTextForGeneration })
+      const moduleRef = doc(firestore, "modules", targetModule);
       
-      // In a real app, you would save these new questions to the database for the target module.
-      // For this demo, we'll just log them and show a success toast.
-      console.log("Generated Questions:", result.questions)
+      const questionsWithIds = result.questions.map(q => ({...q, id: `q${Date.now()}-${Math.random()}`}));
+      
+      await updateDoc(moduleRef, {
+        questions: arrayUnion(...questionsWithIds)
+      });
+      
+      setModules(prevModules => prevModules.map(m => {
+        if (m.id === targetModule) {
+          return { ...m, questions: [...m.questions, ...questionsWithIds] };
+        }
+        return m;
+      }));
 
       toast({
         title: "Fragen generiert!",
-        description: `${result.questions.length} neue Fragen wurden für das ausgewählte Modul erstellt. (Simulation - wird nicht gespeichert)`,
+        description: `${result.questions.length} neue Fragen wurden für das ausgewählte Modul erstellt und gespeichert.`,
       })
 
     } catch (error) {
@@ -150,49 +239,52 @@ export function QuestionEditor({ modules: initialModules, policyTextForGeneratio
 
       <div>
         <h2 className="text-2xl font-bold tracking-tight font-headline mb-4">Bestehende Fragen verwalten</h2>
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion type="single" collapsible className="w-full" defaultValue={modules[0]?.id}>
           {modules.map((module) => (
             <AccordionItem value={module.id} key={module.id}>
               <AccordionTrigger className="text-lg font-medium">{module.title}</AccordionTrigger>
               <AccordionContent>
                 <div className="mb-4 flex justify-end">
-                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                  <Dialog open={isDialogOpen && editingQuestion?.moduleId !== module.id} onOpenChange={(isOpen) => { if (!isOpen) setEditingQuestion(null); setIsDialogOpen(isOpen); }}>
                     <DialogTrigger asChild>
-                      <Button onClick={() => setEditingQuestion(null)}>
+                      <Button onClick={() => { setEditingQuestion(null); setTargetModule(module.id); setIsDialogOpen(true); }}>
                         <PlusCircle className="mr-2 h-4 w-4" />
                         Frage hinzufügen
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle>{editingQuestion ? "Frage bearbeiten" : "Neue Frage hinzufügen"}</DialogTitle>
-                        <DialogDescription>
-                          {editingQuestion ? "Ändern Sie die Details dieser Frage." : "Füllen Sie die Details für die neue Frage aus."}
-                        </DialogDescription>
-                      </DialogHeader>
-                      <form onSubmit={handleAddOrUpdateQuestion} className="grid gap-4 py-4">
-                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="questionText" className="text-right">Frage</Label>
-                          <Textarea id="questionText" defaultValue={editingQuestion?.question.questionText} className="col-span-3" />
-                        </div>
-                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="option1" className="text-right">Option 1</Label>
-                          <Input id="option1" defaultValue={editingQuestion?.question.options[0]} className="col-span-3" />
-                        </div>
-                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="option2" className="text-right">Option 2</Label>
-                          <Input id="option2" defaultValue={editingQuestion?.question.options[1]} className="col-span-3" />
-                        </div>
-                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="option3" className="text-right">Option 3</Label>
-                          <Input id="option3" defaultValue={editingQuestion?.question.options[2]} className="col-span-3" />
-                        </div>
-                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="correctAnswer" className="text-right">Korrekt (1-3)</Label>
-                          <Input id="correctAnswer" type="number" min="1" max="3" defaultValue={editingQuestion ? editingQuestion.question.correctAnswerIndex + 1 : 1} className="col-span-3" />
-                        </div>
-                         <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="explanation" className="text-right">Erklärung</Label>                          <Textarea id="explanation" defaultValue={editingQuestion?.question.explanation} className="col-span-3" />
+                      <form onSubmit={handleAddOrUpdateQuestion}>
+                        <DialogHeader>
+                          <DialogTitle>{editingQuestion ? "Frage bearbeiten" : "Neue Frage hinzufügen"}</DialogTitle>
+                          <DialogDescription>
+                            {editingQuestion ? "Ändern Sie die Details dieser Frage." : `Füllen Sie die Details für die neue Frage im Modul "${module.title}" aus.`}
+                          </DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4">
+                           <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="questionText" className="text-right">Frage</Label>
+                            <Textarea id="questionText" name="questionText" defaultValue={editingQuestion?.question.questionText} className="col-span-3" />
+                          </div>
+                           <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="option1" className="text-right">Option 1</Label>
+                            <Input id="option1" name="option1" defaultValue={editingQuestion?.question.options[0]} className="col-span-3" />
+                          </div>
+                           <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="option2" className="text-right">Option 2</Label>
+                            <Input id="option2" name="option2" defaultValue={editingQuestion?.question.options[1]} className="col-span-3" />
+                          </div>
+                           <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="option3" className="text-right">Option 3</Label>
+                            <Input id="option3" name="option3" defaultValue={editingQuestion?.question.options[2]} className="col-span-3" />
+                          </div>
+                           <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="correctAnswer" className="text-right">Korrekt (1-3)</Label>
+                            <Input id="correctAnswer" name="correctAnswer" type="number" min="1" max="3" defaultValue={editingQuestion ? editingQuestion.question.correctAnswerIndex + 1 : 1} className="col-span-3" />
+                          </div>
+                           <div className="grid gridcols-4 items-center gap-4">
+                            <Label htmlFor="explanation" className="text-right">Erklärung</Label>
+                            <Textarea id="explanation" name="explanation" defaultValue={editingQuestion?.question.explanation} className="col-span-3" />
+                          </div>
                         </div>
                         <DialogFooter>
                           <Button type="submit">Frage speichern</Button>
@@ -209,14 +301,14 @@ export function QuestionEditor({ modules: initialModules, policyTextForGeneratio
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {module.questions.map((q) => (
+                    {module.questions?.map((q) => (
                       <TableRow key={q.id}>
                         <TableCell className="font-medium">{q.questionText}</TableCell>
                         <TableCell className="text-right">
                           <Button variant="ghost" size="icon" onClick={() => { setEditingQuestion({moduleId: module.id, question: q}); setIsDialogOpen(true); }}>
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive">
+                          <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => handleDeleteQuestion(module.id, q.id)}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </TableCell>

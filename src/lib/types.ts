@@ -1,3 +1,5 @@
+import type { Timestamp } from "firebase/firestore";
+
 export interface User {
   id: string;
   name: string;
@@ -19,20 +21,21 @@ export interface Module {
   id: string;
   title: string;
   description: string;
+  order: number;
   questions: Question[];
 }
 
 export interface UserProgress {
   userId: string;
   moduleId: string;
-  status: 'Not Started' | 'In Progress' | 'Completed' | 'Retake Required' | 'Nicht begonnen' | 'In Bearbeitung' | 'Abgeschlossen' | 'Wiederholung erforderlich';
+  status: 'Nicht begonnen' | 'In Bearbeitung' | 'Abgeschlossen' | 'Wiederholung erforderlich';
   score: number; // Percentage
-  completedAt?: Date;
+  completedAt?: Timestamp;
 }
 
 export interface Certificate {
   id: string;
   userId: string;
-  issuedAt: Date;
-  expiresAt: Date;
+  issuedAt: Timestamp;
+  expiresAt: Timestamp;
 }

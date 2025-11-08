@@ -20,7 +20,7 @@ export function CompletionChart({ progressData }: CompletionChartProps) {
       acc[progress.moduleId] = { total: 0, completed: 0 }
     }
     acc[progress.moduleId].total += 1
-    if (progress.status === "Completed") {
+    if (progress.status === "Abgeschlossen") {
       acc[progress.moduleId].completed += 1
     }
     return acc
@@ -28,14 +28,14 @@ export function CompletionChart({ progressData }: CompletionChartProps) {
 
   const chartData = Object.entries(moduleCompletion).map(([moduleId, data]) => ({
     name: moduleId.split("-").map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
-    completionRate: (data.completed / data.total) * 100,
+    completionRate: data.total > 0 ? (data.completed / data.total) * 100 : 0,
   }))
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Modul-Abschlussquoten</CardTitle>
-        <CardDescription>Prozentsatz der Benutzer, die jedes Modul abgeschlossen haben.</CardDescription>
+        <CardDescription>Prozentsatz der Benutzer, die jedes Modul abgeschlossen haben. (Demodaten)</CardDescription>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={350}>

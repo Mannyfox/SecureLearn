@@ -2,7 +2,7 @@
 
 import { MainNav } from "@/components/main-nav";
 import { UserNav } from "@/components/user-nav";
-import { useAuth } from "@/hooks/use-auth";
+import { useUser } from "@/firebase";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ApfelkisteLogo } from "@/components/apfelkiste-logo";
@@ -17,17 +17,17 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading } = useAuth();
+  const { user, isUserLoading } = useUser();
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!isUserLoading && !user) {
       router.push('/');
     }
-  }, [user, loading, router]);
+  }, [user, isUserLoading, router]);
   
-  if (loading || !user) {
+  if (isUserLoading || !user) {
      return (
       <div className="flex min-h-screen w-full">
         <div className="hidden md:block w-72 border-r p-4 space-y-4">
@@ -44,6 +44,16 @@ export default function DashboardLayout({
     );
   }
 
+  // NOTE: A mock user object is created here for display purposes.
+  // In a real app, you would fetch a user profile from Firestore.
+  const displayUser = {
+      id: user.uid,
+      name: user.isAnonymous ? 'Anonymer Benutzer' : user.email || 'Benutzer',
+      email: user.email || 'anonym@apfelkiste.ch',
+      role: 'user', // This should be determined by custom claims in a real app
+      avatarUrl: user.photoURL || `https://i.pravatar.cc/150?u=${user.uid}`
+  }
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-card md:block">
@@ -55,7 +65,7 @@ export default function DashboardLayout({
             </a>
           </div>
           <ScrollArea className="flex-1">
-            <MainNav user={user} />
+            <MainNav user={displayUser} />
           </ScrollArea>
         </div>
       </div>
@@ -80,7 +90,7 @@ export default function DashboardLayout({
                     </a>
                 </div>
                 <ScrollArea className="flex-1">
-                    <MainNav user={user} />
+                    <MainNav user={displayUser} />
                 </ScrollArea>
             </SheetContent>
           </Sheet>

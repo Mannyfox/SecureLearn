@@ -21,6 +21,27 @@ interface ModuleCardProps {
 }
 
 const statusInfo = {
+  'Abgeschlossen': {
+    badge: <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-800">Abgeschlossen</Badge>,
+    icon: <CheckCircle2 className="h-5 w-5 text-green-600" />,
+    buttonText: 'Überprüfen',
+  },
+  'In Bearbeitung': {
+    badge: <Badge variant="outline">In Bearbeitung</Badge>,
+    icon: <PlayCircle className="h-5 w-5 text-blue-600" />,
+    buttonText: 'Fortsetzen',
+  },
+  'Nicht begonnen': {
+    badge: <Badge variant="secondary">Nicht begonnen</Badge>,
+    icon: <PlayCircle className="h-5 w-5 text-gray-500" />,
+    buttonText: 'Modul starten',
+  },
+  'Wiederholung erforderlich': {
+    badge: <Badge variant="destructive">Wiederholung erforderlich</Badge>,
+    icon: <RefreshCw className="h-5 w-5 text-red-600" />,
+    buttonText: 'Modul wiederholen',
+  },
+  // Fallbacks for English statuses if they slip through
   'Completed': {
     badge: <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-800">Abgeschlossen</Badge>,
     icon: <CheckCircle2 className="h-5 w-5 text-green-600" />,
@@ -40,12 +61,7 @@ const statusInfo = {
     badge: <Badge variant="destructive">Wiederholung erforderlich</Badge>,
     icon: <RefreshCw className="h-5 w-5 text-red-600" />,
     buttonText: 'Modul wiederholen',
-  },
-  'Nicht begonnen': {
-    badge: <Badge variant="secondary">Nicht begonnen</Badge>,
-    icon: <PlayCircle className="h-5 w-5 text-gray-500" />,
-    buttonText: 'Modul starten',
-  },
+  }
 }
 
 export function ModuleCard({ module, progress }: ModuleCardProps) {
@@ -68,7 +84,7 @@ export function ModuleCard({ module, progress }: ModuleCardProps) {
         </div>
       </CardHeader>
       <CardContent className="flex-grow p-6 space-y-3">
-        <div className="space-y-1">
+        <div className="space-y-2">
             <CardTitle className="text-xl font-headline leading-snug">{module.title}</CardTitle>
             {badge}
         </div>

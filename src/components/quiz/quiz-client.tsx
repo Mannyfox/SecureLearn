@@ -10,6 +10,9 @@ import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { cn } from "@/lib/utils"
 import { CheckCircle2, XCircle } from "lucide-react"
+import { useUser, useFirestore, setDocumentNonBlocking } from "@/firebase"
+import { doc, serverTimestamp } from "firebase/firestore"
+import { useRouter } from "next/navigation"
 
 interface QuizClientProps {
   module: Module
@@ -18,6 +21,10 @@ interface QuizClientProps {
 type AnswerState = 'unanswered' | 'correct' | 'incorrect'
 
 export function QuizClient({ module }: QuizClientProps) {
+  const { user } = useUser();
+  const firestore = useFirestore();
+  const router = useRouter();
+
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
   const [answerState, setAnswerState] = useState<AnswerState>('unanswered')
@@ -38,20 +45,34 @@ export function QuizClient({ module }: QuizClientProps) {
     }
   }
 
+  const handleFinishQuiz = () => {
+    if (!user || !firestore) return;
+    const finalScore = Math.round((score / module.questions.length) * 100);
+    const progressRef = doc(firestore, `users/${user.uid}/moduleProgress`, module.id);
+    
+    setDocumentNonBlocking(progressRef, {
+      userId: user.uid,
+      moduleId: module.id,
+      status: finalScore >= 80 ? 'Abgeschlossen' : 'Wiederholung erforderlich',
+      score: finalScore,
+      completedAt: serverTimestamp(),
+    }, { merge: true });
+
+    setIsQuizFinished(true);
+  }
+
   const handleNextQuestion = () => {
     setAnswerState('unanswered')
     setSelectedAnswer(null)
     if (currentQuestionIndex < module.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1)
     } else {
-      setIsQuizFinished(true)
-      // In a real app, a server action would save the progress here.
-      console.log(`Quiz finished! Final score: ${score}/${module.questions.length}`)
+      handleFinishQuiz()
     }
   }
   
   if (isQuizFinished) {
-    const finalScore = (score / module.questions.length) * 100
+    const finalScore = Math.round((score / module.questions.length) * 100)
     return (
         <Card className="w-full max-w-2xl">
             <CardHeader>
@@ -64,8 +85,8 @@ export function QuizClient({ module }: QuizClientProps) {
                 <p className="text-muted-foreground">{score} von {module.questions.length} richtig</p>
             </CardContent>
             <CardFooter>
-                <Button asChild className="w-full">
-                    <a href="/dashboard">Zurück zum Dashboard</a>
+                <Button onClick={() => router.push('/dashboard')} className="w-full">
+                    Zurück zum Dashboard
                 </Button>
             </CardFooter>
         </Card>

@@ -2,9 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { ApfelkisteLogo } from "@/components/apfelkiste-logo";
-import { useAuth } from "@/hooks/use-auth";
+import { useUser, useAuth as useFirebaseAuth, setDocumentNonBlocking } from "@/firebase";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { signInAnonymously, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { doc, serverTimestamp } from "firebase/firestore";
+import { useFirestore } from "@/firebase";
 
 function GoogleIcon() {
   return (
@@ -15,14 +18,59 @@ function GoogleIcon() {
 }
 
 export default function LoginPage() {
-  const { user, login } = useAuth();
+  const { user, isUserLoading } = useUser();
+  const auth = useFirebaseAuth();
+  const firestore = useFirestore();
   const router = useRouter();
 
   useEffect(() => {
-    if (user) {
+    if (!isUserLoading && user) {
+      // Create user profile in Firestore if it doesn't exist
+      if (firestore && user.uid) {
+        const userRef = doc(firestore, "users", user.uid);
+        // We use set with merge to avoid overwriting existing data
+        setDocumentNonBlocking(userRef, {
+            id: user.uid,
+            email: user.email || 'anonym@apfelkiste.ch',
+            name: user.displayName || 'Anonymer Benutzer',
+            role: 'user', // default role
+            department: 'Technik', // default department
+            createdAt: serverTimestamp()
+        }, { merge: true });
+      }
       router.push('/dashboard');
     }
-  }, [user, router]);
+  }, [user, isUserLoading, router, firestore]);
+
+  const handleAnonymousLogin = async (role: 'user' | 'admin') => {
+    if (!auth || !firestore) return;
+    try {
+      const userCredential = await signInAnonymously(auth);
+      const user = userCredential.user;
+      
+      const userRef = doc(firestore, "users", user.uid);
+      await setDocumentNonBlocking(userRef, {
+            id: user.uid,
+            email: 'anonym@apfelkiste.ch',
+            name: role === 'admin' ? 'Admin Benutzer' : 'Anonymer Benutzer',
+            role: role,
+            department: role === 'admin' ? 'Engineering' : 'Sales',
+            createdAt: serverTimestamp()
+      }, { merge: true });
+
+      // The useEffect will handle the redirect
+    } catch (error) {
+      console.error("Anonymous sign-in failed", error);
+    }
+  };
+
+  if (isUserLoading || user) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background p-4">
@@ -38,7 +86,7 @@ export default function LoginPage() {
         </div>
         <div className="space-y-4">
           <Button 
-            onClick={() => login('user')} 
+            onClick={() => handleAnonymousLogin('user')}
             variant="outline" 
             size="lg" 
             className="w-full text-base"
@@ -47,7 +95,7 @@ export default function LoginPage() {
             Als Benutzer anmelden
           </Button>
           <Button 
-            onClick={() => login('admin')} 
+            onClick={() => handleAnonymousLogin('admin')}
             variant="outline" 
             size="lg" 
             className="w-full text-base"
