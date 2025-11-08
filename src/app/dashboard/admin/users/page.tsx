@@ -1,7 +1,7 @@
 'use client';
 
 import { UsersTableClient } from "@/components/admin/users-table-client"
-import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
+import { useCollection, useFirestore, useMemoFirebase, errorEmitter, FirestorePermissionError } from "@/firebase";
 import { collection, query, where, getDocs, collectionGroup } from "firebase/firestore";
 import type { User, UserProgress } from "@/lib/types";
 import { useEffect, useState } from "react";
@@ -17,19 +17,33 @@ export default function AdminUsersPage() {
   useEffect(() => {
     const fetchAllProgress = async () => {
       if (!firestore) return;
+      // Don't fetch until users are loaded, otherwise we might not have a logged-in user context for rules
+      if (isLoadingUsers) return;
+
       setIsProgressLoading(true);
 
-      const progressQuery = query(collectionGroup(firestore, 'moduleProgress'));
-      const querySnapshot = await getDocs(progressQuery);
-      const progressData = querySnapshot.docs.map(doc => doc.data() as UserProgress);
+      const progressQuery = collectionGroup(firestore, 'moduleProgress');
       
-      setAllProgress(progressData);
-      setIsProgressLoading(false);
+      try {
+        const querySnapshot = await getDocs(progressQuery);
+        const progressData = querySnapshot.docs.map(doc => ({...doc.data(), id: doc.id } as UserProgress));
+        setAllProgress(progressData);
+      } catch (serverError) {
+        console.error("Original Firestore error:", serverError) // Keep for basic debugging, but emit the contextual one.
+        const permissionError = new FirestorePermissionError({
+          path: 'moduleProgress (collection group)',
+          operation: 'list',
+        });
+        errorEmitter.emit('permission-error', permissionError);
+        setAllProgress([]); // Clear any potentially stale data
+      } finally {
+        setIsProgressLoading(false);
+      }
     };
 
     fetchAllProgress();
 
-  }, [firestore]);
+  }, [firestore, isLoadingUsers]);
 
 
   if (isLoadingUsers || isProgressLoading) {
