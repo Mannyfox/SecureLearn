@@ -8,6 +8,7 @@
  * @dataStructure
  * - /users/{userId}: Stores user profile data, accessible only by the user themselves.
  * - /modules/{moduleId}: Stores module information, publicly readable but writeable only by admins (not implemented in this prototype).
+ * - /settings/company-guidelines: Stores the company guidelines text, readable by any authenticated user, writeable by admins.
  * - /users/{userId}/moduleProgress/{moduleProgressId}: Stores user progress on modules, accessible only by the user themselves.
  * - /modules/{moduleId}/quizQuestions/{questionId}: Stores quiz questions, accessible only by admins (not implemented in this prototype).
  * - /users/{userId}/quizResults/{quizResultId}: Stores user quiz results, accessible only by the user themselves.
@@ -57,6 +58,12 @@ service cloud.firestore {
       allow create: if isOwner(userId) && request.resource.data.id == userId;
       allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
       allow delete: if isExistingOwner(userId);
+    }
+
+    match /settings/{docId} {
+        allow read: if request.auth != null;
+        // TODO: Only allow admins to write
+        allow write: if request.auth != null;
     }
 
     /**
