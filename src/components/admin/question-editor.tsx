@@ -29,7 +29,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Edit, PlusCircle, Trash2, Wand2, Loader2 } from "lucide-react"
+import { Edit, PlusCircle, Trash2, Wand2, Loader2, Info } from "lucide-react"
 import { generateQuestionsFromText } from "@/ai/flows/generate-questions-flow"
 import { useToast } from "@/hooks/use-toast"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -40,19 +40,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 
 
 interface QuestionEditorProps {
   modules: Module[];
-  initialPolicyText?: string;
+  policyTextForGeneration: string;
 }
 
-export function QuestionEditor({ modules: initialModules, initialPolicyText = "" }: QuestionEditorProps) {
+export function QuestionEditor({ modules: initialModules, policyTextForGeneration }: QuestionEditorProps) {
   const [modules, setModules] = useState(initialModules)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [editingQuestion, setEditingQuestion] = useState<{moduleId: string, question: Question} | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
-  const [policyText, setPolicyText] = useState(initialPolicyText)
   const [targetModule, setTargetModule] = useState<string | null>(null)
   const { toast } = useToast()
 
@@ -70,18 +70,18 @@ export function QuestionEditor({ modules: initialModules, initialPolicyText = ""
   }
 
   const handleGenerateQuestions = async () => {
-    if (!policyText || !targetModule) {
+    if (!policyTextForGeneration || !targetModule) {
       toast({
         variant: "destructive",
         title: "Fehler",
-        description: "Bitte fügen Sie Richtlinientext ein und wählen Sie ein Zielmodul aus.",
+        description: "Bitte wählen Sie ein Zielmodul aus. Der Richtlinientext muss im 'Richtlinien'-Tab gespeichert sein.",
       })
       return
     }
 
     setIsGenerating(true)
     try {
-      const result = await generateQuestionsFromText({ documentContent: policyText })
+      const result = await generateQuestionsFromText({ documentContent: policyTextForGeneration })
       
       // In a real app, you would save these new questions to the database for the target module.
       // For this demo, we'll just log them and show a success toast.
@@ -89,9 +89,8 @@ export function QuestionEditor({ modules: initialModules, initialPolicyText = ""
 
       toast({
         title: "Fragen generiert!",
-        description: `${result.questions.length} neue Fragen wurden erstellt. (Simulation - wird nicht gespeichert)`,
+        description: `${result.questions.length} neue Fragen wurden für das ausgewählte Modul erstellt. (Simulation - wird nicht gespeichert)`,
       })
-      // We don't clear the policy text anymore so user can re-generate for other modules.
 
     } catch (error) {
       console.error("Error generating questions:", error)
@@ -112,17 +111,19 @@ export function QuestionEditor({ modules: initialModules, initialPolicyText = ""
         <CardHeader>
           <CardTitle>Fragen aus Richtlinien generieren (KI)</CardTitle>
           <CardDescription>
-            Fügen Sie den Inhalt Ihrer im Tab "Richtlinien" gespeicherten Richtlinien ein, wählen Sie das Zielmodul und lassen Sie die KI automatisch Quizfragen erstellen.
+            Wählen Sie ein Zielmodul und lassen Sie die KI automatisch Quizfragen aus dem im Tab "Richtlinien" gespeicherten Text erstellen.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Textarea
-            placeholder="Fügen Sie hier Ihre Richtlinientexte ein..."
-            className="min-h-[200px]"
-            value={policyText}
-            onChange={(e) => setPolicyText(e.target.value)}
-            disabled={isGenerating}
-          />
+           {policyTextForGeneration.length < 50 && (
+             <Alert>
+                <Info className="h-4 w-4" />
+                <AlertTitle>Kein Richtlinientext gefunden</AlertTitle>
+                <AlertDescription>
+                  Es scheint, als wäre kein Text im "Richtlinien"-Tab gespeichert. Bitte fügen Sie dort zuerst Ihre Richtlinien ein, um Fragen generieren zu können.
+                </AlertDescription>
+              </Alert>
+           )}
           <div className="flex flex-col sm:flex-row gap-4">
             <Select onValueChange={setTargetModule} disabled={isGenerating}>
               <SelectTrigger className="w-full sm:w-[240px]">
@@ -134,7 +135,7 @@ export function QuestionEditor({ modules: initialModules, initialPolicyText = ""
                 ))}
               </SelectContent>
             </Select>
-            <Button onClick={handleGenerateQuestions} disabled={isGenerating || !policyText || !targetModule} className="w-full sm:w-auto">
+            <Button onClick={handleGenerateQuestions} disabled={isGenerating || !policyTextForGeneration || !targetModule} className="w-full sm:w-auto">
               {isGenerating ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
@@ -191,8 +192,7 @@ export function QuestionEditor({ modules: initialModules, initialPolicyText = ""
                           <Input id="correctAnswer" type="number" min="1" max="3" defaultValue={editingQuestion ? editingQuestion.question.correctAnswerIndex + 1 : 1} className="col-span-3" />
                         </div>
                          <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="explanation" className="text-right">Erklärung</Label>
-                          <Textarea id="explanation" defaultValue={editingQuestion?.question.explanation} className="col-span-3" />
+                          <Label htmlFor="explanation" className="text-right">Erklärung</Label>                          <Textarea id="explanation" defaultValue={editingQuestion?.question.explanation} className="col-span-3" />
                         </div>
                         <DialogFooter>
                           <Button type="submit">Frage speichern</Button>

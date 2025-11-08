@@ -5,8 +5,8 @@ export default function AdminQuestionsPage() {
   // In a real app, you'd fetch this from a database.
   const modules = mockModules
   
-  // In a real app, you'd fetch the latest guidelines from the database.
-  const guidelinesText = `1. Datenschutzgrundlagen: Alle Mitarbeitenden sind verpflichtet, personenbezogene Daten (z.B. von Kunden oder anderen Mitarbeitenden) streng vertraulich zu behandeln. Die Weitergabe an Dritte ist nur mit ausdrücklicher Genehmigung gestattet.
+  // This text would come from a database, populated from the 'Guidelines' tab.
+  const guidelinesTextFromDb = `1. Datenschutzgrundlagen: Alle Mitarbeitenden sind verpflichtet, personenbezogene Daten (z.B. von Kunden oder anderen Mitarbeitenden) streng vertraulich zu behandeln. Die Weitergabe an Dritte ist nur mit ausdrücklicher Genehmigung gestattet.
 
 2. Passwortsicherheit: Passwörter müssen mindestens 12 Zeichen lang sein und eine Kombination aus Groß- und Kleinbuchstaben, Zahlen und Sonderzeichen enthalten. Passwörter sind alle 90 Tage zu ändern und dürfen nicht wiederverwendet werden.
 
@@ -19,7 +19,7 @@ export default function AdminQuestionsPage() {
 
   return (
     <div>
-      <QuestionEditor modules={modules} initialPolicyText={guidelinesText} />
+      <QuestionEditor modules={modules} policyTextForGeneration={guidelinesTextFromDb} />
     </div>
   )
 }
