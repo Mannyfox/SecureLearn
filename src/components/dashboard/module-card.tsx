@@ -53,7 +53,7 @@ export function ModuleCard({ module, progress }: ModuleCardProps) {
   const image = PlaceHolderImages.find(img => img.id === module.id)
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col overflow-hidden">
       <CardHeader className="p-0">
         <div className="relative h-48 w-full">
           {image && (
@@ -61,23 +61,26 @@ export function ModuleCard({ module, progress }: ModuleCardProps) {
               src={image.imageUrl}
               alt={module.title}
               fill
-              className="object-cover rounded-t-lg"
+              className="object-cover"
               data-ai-hint={image.imageHint}
             />
           )}
         </div>
       </CardHeader>
-      <CardContent className="flex-grow p-6">
-        <div className="flex justify-between items-start mb-2">
-            <CardTitle className="text-xl font-headline mb-1">{module.title}</CardTitle>
+      <CardContent className="flex-grow p-6 space-y-2">
+        <div className="flex justify-between items-start">
+            <CardTitle className="text-xl font-headline leading-snug">{module.title}</CardTitle>
             {badge}
         </div>
         <CardDescription>{module.description}</CardDescription>
       </CardContent>
-      <CardFooter className="flex flex-col items-start gap-4 p-6 pt-0">
-        <div>
-          <p className="text-sm font-medium mb-1">Fortschritt</p>
-          <Progress value={progress.score} className="w-full h-2" />
+      <CardFooter className="flex flex-col items-start gap-4 p-6 pt-0 bg-muted/50 dark:bg-card">
+        <div className="w-full">
+          <div className="flex justify-between items-center mb-1">
+            <p className="text-sm font-medium">Fortschritt</p>
+            <p className="text-sm font-semibold text-primary">{progress.score}%</p>
+          </div>
+          <Progress value={progress.score} className="h-2" />
         </div>
         <Button asChild className="w-full">
           <Link href={`/dashboard/modules/${module.id}`}>
