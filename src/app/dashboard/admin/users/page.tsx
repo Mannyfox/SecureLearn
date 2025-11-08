@@ -2,7 +2,7 @@
 
 import { UsersTableClient } from "@/components/admin/users-table-client"
 import { useCollection, useFirestore, useMemoFirebase, errorEmitter, FirestorePermissionError } from "@/firebase";
-import { collection, query, where, getDocs, collectionGroup } from "firebase/firestore";
+import { collection, query, getDocs, collectionGroup } from "firebase/firestore";
 import type { User, UserProgress } from "@/lib/types";
 import { useEffect, useState } from "react";
 
@@ -15,33 +15,35 @@ export default function AdminUsersPage() {
   const { data: users, isLoading: isLoadingUsers } = useCollection<User>(usersQuery);
 
   useEffect(() => {
-    const fetchAllProgress = async () => {
-      if (!firestore) return;
-      // Don't fetch until users are loaded, otherwise we might not have a logged-in user context for rules
-      if (isLoadingUsers) return;
+    if (!firestore || isLoadingUsers) {
+      // Don't run if firestore is not available or users are still loading.
+      if (!isLoadingUsers) {
+        setIsProgressLoading(false);
+      }
+      return;
+    };
 
-      setIsProgressLoading(true);
+    setIsProgressLoading(true);
 
-      const progressQuery = collectionGroup(firestore, 'moduleProgress');
-      
-      try {
-        const querySnapshot = await getDocs(progressQuery);
+    const progressQuery = collectionGroup(firestore, 'moduleProgress');
+    
+    getDocs(progressQuery)
+      .then(querySnapshot => {
         const progressData = querySnapshot.docs.map(doc => ({...doc.data(), id: doc.id } as UserProgress));
         setAllProgress(progressData);
-      } catch (serverError) {
-        console.error("Original Firestore error:", serverError) // Keep for basic debugging, but emit the contextual one.
+      })
+      .catch(serverError => {
+        // This is the correct place to catch and handle the permission error.
         const permissionError = new FirestorePermissionError({
           path: 'moduleProgress (collection group)',
           operation: 'list',
         });
         errorEmitter.emit('permission-error', permissionError);
         setAllProgress([]); // Clear any potentially stale data
-      } finally {
+      })
+      .finally(() => {
         setIsProgressLoading(false);
-      }
-    };
-
-    fetchAllProgress();
+      });
 
   }, [firestore, isLoadingUsers]);
 
