@@ -46,7 +46,7 @@ const statusInfo = {
 export function ModuleCard({ module, progress }: ModuleCardProps) {
   // Fallback for unexpected statuses
   const currentStatusInfo = statusInfo[progress.status] || statusInfo['Nicht begonnen'];
-  const image = PlaceHolderImages.find(img => img.id === module.id) ?? PlaceHolderImages[0];
+  const image = PlaceHolderImages.get(module.id) ?? PlaceHolderImages.getDefault();
 
   return (
     <Card className="flex flex-col overflow-hidden">
