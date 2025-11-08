@@ -29,75 +29,92 @@ export const otherUsers: User[] = [
 ];
 
 // QUESTIONS
-const phishingQuestions: Question[] = [
-  { id: 'q1', questionText: 'Was ist ein häufiges Anzeichen für eine Phishing-E-Mail?', options: ['Eine generische Begrüßung wie "Sehr geehrter Kunde"', 'Eine E-Mail von Ihrem Chef', 'Eine Aufforderung, Ihr Passwort zurückzusetzen'], correctAnswerIndex: 0, explanation: 'Phishing-E-Mails verwenden oft generische Begrüßungen, da sie an viele Personen gleichzeitig gesendet werden.' },
-  { id: 'q2', questionText: 'Was sollten Sie tun, wenn Sie eine verdächtige E-Mail mit einem Link erhalten?', options: ['Auf den Link klicken, um zu sehen, wohin er führt', 'Die E-Mail löschen und nichts tun', 'Nicht auf den Link klicken und ihn der IT-Abteilung melden'], correctAnswerIndex: 2, explanation: 'Klicken Sie niemals auf Links in verdächtigen E-Mails. Melden Sie diese immer Ihrer IT-Abteilung zur Untersuchung.' },
-  { id: 'q13', questionText: 'Welche Art von Information versuchen Phisher typischerweise zu stehlen?', options: ['Ihren Lieblingsfilm', 'Anmeldeinformationen und Finanzdaten', 'Öffentlich verfügbare Nachrichten'], correctAnswerIndex: 1, explanation: 'Phishing-Angriffe zielen darauf ab, sensible Daten wie Passwörter, Kreditkartennummern und Bankinformationen zu stehlen.' },
+const grundlagenQuestions: Question[] = [
+    { id: 'q1', questionText: 'Was ist das Hauptziel der Informationssicherheit?', options: ['Maximale Mitarbeiterüberwachung', 'Schutz von Informationen vor unbefugtem Zugriff, Nutzung, Offenlegung, Veränderung oder Zerstörung', 'Die IT-Abteilung zu vergrößern'], correctAnswerIndex: 1, explanation: 'Das Hauptziel der Informationssicherheit ist die Gewährleistung der Vertraulichkeit, Integrität und Verfügbarkeit von Informationen.' },
+    { id: 'q2', questionText: 'Wer ist im Unternehmen für die Informationssicherheit verantwortlich?', options: ['Nur die IT-Abteilung', 'Nur die Geschäftsführung', 'Jeder einzelne Mitarbeiter'], correctAnswerIndex: 2, explanation: 'Jeder Mitarbeiter trägt eine Verantwortung für die Informationssicherheit, indem er Richtlinien befolgt und wachsam ist.' },
+    { id: 'q3', questionText: 'Was bedeutet das "Need-to-know"-Prinzip?', options: ['Jeder darf alles wissen', 'Mitarbeiter erhalten nur Zugriff auf die Informationen, die sie für ihre Arbeit benötigen', 'Informationen werden nur auf Anfrage mitgeteilt'], correctAnswerIndex: 1, explanation: 'Das "Need-to-know"-Prinzip beschränkt den Zugriff auf Daten und Systeme auf das absolut notwendige Minimum, um das Risiko zu reduzieren.' },
 ];
 
-const passwordQuestions: Question[] = [
-  { id: 'q3', questionText: 'Was ist die beste Methode, um ein starkes Passwort zu erstellen?', options: ['Den Namen Ihres Haustiers verwenden', 'Eine lange Phrase mit einer Mischung aus Zeichen, Zahlen und Symbolen', 'Ein kurzes, leicht zu merkendes Wort'], correctAnswerIndex: 1, explanation: 'Starke Passwörter sind lang und komplex, was es schwieriger macht, sie zu erraten oder zu knacken.' },
-  { id: 'q4', questionText: 'Wie oft sollten Sie idealerweise Ihr Hauptarbeitspasswort ändern?', options: ['Niemals', 'Alle 90 Tage', 'Jeden Tag'], correctAnswerIndex: 1, explanation: 'Regelmäßiges Ändern von Passwörtern minimiert das Risiko, falls Ihr Passwort jemals kompromittiert wird.' },
-  { id: 'q14', questionText: 'Was ist Zwei-Faktor-Authentifizierung (2FA)?', options: ['Zwei verschiedene Passwörter für einen Account', 'Eine zusätzliche Sicherheitsebene neben dem Passwort', 'Ein Passwort, das doppelt so lang ist'], correctAnswerIndex: 1, explanation: '2FA erfordert eine zweite Form der Verifizierung (z.B. ein Code vom Handy) zusätzlich zum Passwort und erhöht die Sicherheit erheblich.' },
+const datenklassifizierungQuestions: Question[] = [
+    { id: 'q4', questionText: 'Warum ist die Klassifizierung von Daten wichtig?', options: ['Um Dokumente schöner zu gestalten', 'Um den richtigen Schutzbedarf für verschiedene Arten von Informationen zu bestimmen', 'Es ist eine gesetzliche Vorgabe ohne praktischen Nutzen'], correctAnswerIndex: 1, explanation: 'Durch die Klassifizierung (z.B. in "öffentlich", "intern", "vertraulich") wird sichergestellt, dass jede Information den angemessenen Schutz erhält.' },
+    { id: 'q5', questionText: 'Welche Datenkategorie erfordert den höchsten Schutz?', options: ['Öffentlich', 'Intern', 'Streng vertraulich'], correctAnswerIndex: 2, explanation: 'Streng vertrauliche Daten, wie z.B. Geschäftsgeheimnisse oder sensible Personaldaten, erfordern die strengsten Sicherheitsmaßnahmen.' },
+    { id: 'q6', questionText: 'Wie sollte ein Dokument mit der Klassifizierung "Intern" behandelt werden?', options: ['Es kann auf Social Media geteilt werden', 'Es sollte nur innerhalb des Unternehmens geteilt werden', 'Es kann an Kunden weitergegeben werden'], correctAnswerIndex: 1, explanation: 'Interne Dokumente sind für den Gebrauch innerhalb der Firma bestimmt und dürfen nicht nach außen gelangen.' },
 ];
 
-const dataProtectionQuestions: Question[] = [
-    { id: 'q5', questionText: 'Was sind personenbezogene Daten?', options: ['Jede Information über das Wetter', 'Informationen, die sich auf eine identifizierte oder identifizierbare Person beziehen', 'Nur die E-Mail-Adresse einer Person'], correctAnswerIndex: 1, explanation: 'Personenbezogene Daten umfassen alle Informationen, die einer Person zugeordnet werden können, wie Name, Adresse, Geburtsdatum etc.' },
-    { id: 'q6', questionText: 'Dürfen Sie Kundendaten auf Ihrem privaten USB-Stick speichern?', options: ['Ja, wenn es praktisch ist', 'Nein, sensible Daten dürfen nur auf genehmigten Firmengeräten gespeichert werden', 'Nur, wenn der Stick verschlüsselt ist'], correctAnswerIndex: 1, explanation: 'Das Speichern von Firmendaten auf privaten Geräten ist ein erhebliches Sicherheitsrisiko und in der Regel streng verboten.' },
-    { id: 'q15', questionText: 'Was bedeutet der Grundsatz der "Datenminimierung"?', options: ['So viele Daten wie möglich sammeln', 'Daten auf ein Minimum reduzieren, indem man sie löscht', 'Nur die Daten erheben und verarbeiten, die für den Zweck unbedingt erforderlich sind'], correctAnswerIndex: 2, explanation: 'Datenminimierung ist ein Kernprinzip des Datenschutzes und besagt, dass man nur so wenige Daten wie nötig sammeln sollte.' },
+const zugriffskontrolleQuestions: Question[] = [
+    { id: 'q7', questionText: 'Was ist ein Merkmal eines starken Passworts?', options: ['Kurz und einfach zu merken, z.B. "12345"', 'Eine Kombination aus Groß- und Kleinbuchstaben, Zahlen und Sonderzeichen', 'Der Name des eigenen Haustieres'], correctAnswerIndex: 1, explanation: 'Ein starkes Passwort ist lang und komplex, um es für Angreifer schwer zu machen, es zu erraten oder zu knacken.' },
+    { id: 'q8', questionText: 'Was ist Zwei-Faktor-Authentifizierung (2FA)?', options: ['Zwei verschiedene Passwörter für dasselbe Konto', 'Ein Anmeldeverfahren, das zwei verschiedene Arten von Nachweisen erfordert (z.B. Passwort und ein Code vom Handy)', 'Das Passwort zweimal eingeben'], correctAnswerIndex: 1, explanation: '2FA fügt eine zusätzliche Sicherheitsebene hinzu und schützt Ihr Konto selbst dann, wenn Ihr Passwort gestohlen wurde.' },
+    { id: 'q9', questionText: 'Warum sollten Sie Passwörter nicht wiederverwenden?', options: ['Weil es langweilig ist', 'Wenn ein Dienst gehackt wird, können Angreifer mit dem gestohlenen Passwort auf andere Dienste zugreifen', 'Es ist kein Problem, Passwörter wiederzuverwenden'], correctAnswerIndex: 1, explanation: 'Die Wiederverwendung von Passwörtern führt dazu, dass eine einzige Sicherheitsverletzung mehrere Ihrer Konten gefährden kann.' },
 ];
 
-const socialEngineeringQuestions: Question[] = [
-    { id: 'q7', questionText: 'Was ist Social Engineering?', options: ['Ein Networking-Event für Ingenieure', 'Die technische Manipulation von Software', 'Die psychologische Manipulation von Menschen, um Informationen preiszugeben'], correctAnswerIndex: 2, explanation: 'Social Engineering nutzt menschliche Eigenschaften wie Hilfsbereitschaft oder Angst aus, um an vertrauliche Informationen zu gelangen.' },
-    { id: 'q8', questionText: 'Jemand ruft an und gibt sich als IT-Support aus. Er bittet um Ihr Passwort, um ein Problem zu beheben. Was tun Sie?', options: ['Das Passwort geben, um das Problem schnell zu lösen', 'Das Gespräch beenden und die IT über den offiziellen Kanal kontaktieren', 'Den Anrufer bitten, später zurückzurufen'], correctAnswerIndex: 1, explanation: 'Seriöse Mitarbeiter, insbesondere von der IT, werden Sie niemals nach Ihrem Passwort fragen. Dies ist ein klassischer Social-Engineering-Versuch.' },
-    { id: 'q16', questionText: 'Was ist "Tailgating" im Kontext der physischen Sicherheit?', options: ['Dichtes Auffahren auf der Autobahn', 'Jemandem unbemerkt durch eine gesicherte Tür folgen', 'Eine Grillparty auf dem Firmenparkplatz'], correctAnswerIndex: 1, explanation: 'Tailgating (oder "Piggybacking") ist das Ausnutzen der Höflichkeit, um sich unerlaubt Zutritt zu einem Gebäude zu verschaffen.' },
+const betriebssicherheitQuestions: Question[] = [
+    { id: 'q10', questionText: 'Warum sollten Sie Ihren Computer sperren (Win+L / Cmd+Ctrl+Q), wenn Sie Ihren Platz verlassen?', options: ['Um Strom zu sparen', 'Um unbefugten Zugriff auf Ihre Daten durch Dritte zu verhindern', 'Das ist nicht notwendig im Büro'], correctAnswerIndex: 1, explanation: 'Ein ungesperrter Bildschirm ist eine offene Einladung für neugierige Kollegen oder unbefugte Personen, auf Ihre Daten zuzugreifen.' },
+    { id: 'q11', questionText: 'Was ist ein "Clean Desk"-Prinzip?', options: ['Den Schreibtisch jeden Abend mit Seife zu waschen', 'Keine persönlichen Gegenstände auf dem Schreibtisch zu haben', 'Am Ende des Tages keine sensiblen Dokumente oder Notizen offen auf dem Schreibtisch liegen zu lassen'], correctAnswerIndex: 2, explanation: 'Eine "Clean Desk Policy" reduziert das Risiko, dass vertrauliche Informationen von unbefugten Personen eingesehen oder gestohlen werden.' },
+    { id: 'q12', questionText: 'Wo sollten Sie vertrauliche Ausdrucke entsorgen?', options: ['Im normalen Papierkorb', 'In einem speziellen Aktenvernichter (Schredder)', 'Einfach auf dem Schreibtisch für später liegen lassen'], correctAnswerIndex: 1, explanation: 'Vertrauliche Dokumente müssen geschreddert werden, um zu verhindern, dass sie aus dem Müll gefischt und missbraucht werden.' },
 ];
 
-const physicalSecurityQuestions: Question[] = [
-    { id: 'q9', questionText: 'Warum sollten Sie Ihren Computer sperren, wenn Sie Ihren Schreibtisch verlassen?', options: ['Um Strom zu sparen', 'Um unbefugten Zugriff auf Ihre Daten und Ihr System zu verhindern', 'Es ist nicht notwendig, wenn man nur kurz weg ist'], correctAnswerIndex: 1, explanation: 'Ein ungesperrter Computer ist eine offene Tür für jeden, der physischen Zugang zu Ihrem Schreibtisch hat.' },
-    { id: 'q10', questionText: 'Wo sollten Sie vertrauliche Dokumente entsorgen?', options: ['Im normalen Papierkorb', 'In einem Aktenvernichter', 'Auf dem Schreibtisch liegen lassen'], correctAnswerIndex: 1, explanation: 'Aktenvernichter zerstören Dokumente so, dass sie nicht wiederhergestellt werden können, was für den Schutz sensibler Informationen unerlässlich ist.' },
-    { id: 'q17', questionText: 'Sie finden einen unbekannten USB-Stick auf dem Parkplatz. Was sollten Sie tun?', options: ['Ihn an Ihrem Arbeitsrechner anschliessen, um den Besitzer zu finden', 'Ihn ignorieren und liegen lassen', 'Ihn bei der IT-Abteilung abgeben, ohne ihn zu benutzen'], correctAnswerIndex: 2, explanation: 'Unbekannte USB-Sticks können Malware enthalten. Schliessen Sie sie niemals an einen Computer an. Die IT-Abteilung hat sichere Methoden zur Überprüfung.' },
+const netzwerkEmailQuestions: Question[] = [
+    { id: 'q13', questionText: 'Was ist Phishing?', options: ['Ein Angel-Hobby von Kollegen', 'Betrügerische E-Mails, die darauf abzielen, an Ihre sensiblen Daten zu gelangen', 'Eine neue Art von Computerspiel'], correctAnswerIndex: 1, explanation: 'Phishing ist eine der häufigsten Angriffsmethoden. Seien Sie immer misstrauisch gegenüber E-Mails, die nach Passwörtern oder persönlichen Informationen fragen.' },
+    { id: 'q14', questionText: 'Dürfen Sie sich mit dem Firmenlaptop in ein öffentliches, ungesichertes WLAN (z.B. im Café) einwählen?', options: ['Ja, das ist kein Problem', 'Nur wenn es unbedingt sein muss und unter Verwendung eines VPN', 'Nein, niemals'], correctAnswerIndex: 1, explanation: 'Öffentliche WLANs sind oft ungesichert, was es Angreifern leicht macht, den Datenverkehr mitzulesen. Ein VPN (Virtual Private Network) verschlüsselt Ihre Verbindung und ist hier unerlässlich.' },
+    { id: 'q15', questionText: 'Sie erhalten eine E-Mail mit einem unerwarteten Anhang von einem unbekannten Absender. Was tun Sie?', options: ['Den Anhang sofort öffnen, um zu sehen, was es ist', 'Die E-Mail ignorieren und im Posteingang lassen', 'Die E-Mail löschen, ohne den Anhang zu öffnen, und im Zweifel die IT informieren'], correctAnswerIndex: 2, explanation: 'Unerwartete Anhänge können Schadsoftware (Malware) enthalten. Öffnen Sie sie niemals und melden Sie verdächtige E-Mails.' },
 ];
 
-const incidentResponseQuestions: Question[] = [
-    { id: 'q11', questionText: 'Was ist der erste Schritt, wenn Sie glauben, einen Sicherheitsvorfall entdeckt zu haben?', options: ['Den Computer neu starten', 'Versuchen, das Problem selbst zu beheben', 'Den Vorfall unverzüglich dem zuständigen Team (z.B. IT-Sicherheit) melden'], correctAnswerIndex: 2, explanation: 'Eine schnelle Meldung ist entscheidend, um den Schaden zu begrenzen. Versuche, es selbst zu beheben, können die Situation verschlimmern.' },
-    { id: 'q12', questionText: 'Warum sollten Sie nach einem Sicherheitsvorfall keine Beweise verändern oder löschen?', options: ['Es spielt keine Rolle', 'Um die forensische Untersuchung zu ermöglichen', 'Um Speicherplatz zu sparen'], correctAnswerIndex: 1, explanation: 'Digitale Beweise sind entscheidend, um den Vorfall zu verstehen, den Angreifer zu identifizieren und zukünftige Vorfälle zu verhindern.' },
-    { id: 'q18', questionText: 'Ihr Laptop wurde gestohlen. Was ist die dringendste Massnahme?', options: ['Einen neuen Laptop bestellen', 'Den Diebstahl der IT-Abteilung melden, damit das Gerät gesperrt werden kann', 'Den Diebstahl bei der Polizei melden'], correctAnswerIndex: 1, explanation: 'Die IT kann das Gerät aus der Ferne sperren oder löschen, um den Zugriff auf Unternehmensdaten zu verhindern. Dies ist die wichtigste erste Massnahme.' },
+const mobileGeraeteQuestions: Question[] = [
+    { id: 'q16', questionText: 'Was bedeutet BYOD?', options: ['Bring Your Own Dinner', 'Bring Your Own Device', 'Be Your Own Director'], correctAnswerIndex: 1, explanation: 'BYOD steht für "Bring Your Own Device" und beschreibt die Praxis, private Geräte wie Smartphones oder Laptops für die Arbeit zu nutzen.' },
+    { id: 'q17', questionText: 'Was ist eine wichtige Sicherheitsmaßnahme für Ihr Firmenhandy?', options: ['Eine bunte Hülle verwenden', 'Eine Bildschirmsperre (PIN, Fingerabdruck, etc.) einzurichten', 'Die Helligkeit auf Maximum stellen'], correctAnswerIndex: 1, explanation: 'Eine Bildschirmsperre ist die grundlegendste und eine der wichtigsten Maßnahmen, um Ihr Gerät vor unbefugtem Zugriff bei Verlust oder Diebstahl zu schützen.' },
+    { id: 'q18', questionText: 'Ist es sicher, Apps aus inoffiziellen App-Stores zu installieren?', options: ['Ja, dort gibt es coole Apps umsonst', 'Nein, diese Apps sind oft mit Malware infiziert', 'Nur wenn ein Freund sie empfiehlt'], correctAnswerIndex: 1, explanation: 'Installieren Sie Apps nur aus den offiziellen Stores (Google Play Store, Apple App Store), da diese auf Sicherheit geprüft werden. Inoffizielle Quellen sind ein hohes Risiko.' },
 ];
+
+const kiQuestions: Question[] = [
+    { id: 'q19', questionText: 'Dürfen Sie sensible Unternehmensdaten in öffentliche KI-Tools wie ChatGPT eingeben?', options: ['Ja, die KI lernt daraus und wird besser', 'Nein, diese Daten könnten für das Training des Modells verwendet und öffentlich werden', 'Nur, wenn die Daten anonymisiert sind'], correctAnswerIndex: 1, explanation: 'Öffentliche KI-Modelle können die eingegebenen Daten für ihr Training verwenden. Geben Sie niemals vertrauliche oder personenbezogene Unternehmens- oder Kundendaten ein.' },
+    { id: 'q20', questionText: 'Was ist eine Gefahr von KI-generierten Inhalten (z.B. Deepfakes)?', options: ['Sie sind immer von schlechter Qualität', 'Sie können zur Erstellung von überzeugenden Fälschungen für Betrug oder Desinformation missbraucht werden', 'Sie sind nur für die Unterhaltungsindustrie relevant'], correctAnswerIndex: 1, explanation: 'Deepfake-Technologie kann missbraucht werden, um Identitäten zu fälschen, gefälschte Anweisungen zu geben oder den Ruf von Personen zu schädigen.' },
+    { id: 'q21', questionText: 'Wie sollten Sie von einer KI generierte Informationen überprüfen?', options: ['Man muss sie nicht überprüfen, die KI hat immer Recht', 'Indem man eine zweite KI fragt', 'Indem man die Informationen mit vertrauenswürdigen, unabhängigen Quellen abgleicht'], correctAnswerIndex: 2, explanation: 'KI-Modelle können "halluzinieren", also falsche Informationen erfinden. Überprüfen Sie wichtige Fakten immer kritisch mit verlässlichen Quellen.' },
+];
+
+const incidentManagementQuestions: Question[] = [
+    { id: 'q22', questionText: 'Sie vermuten einen Virus auf Ihrem Computer. Was ist Ihr erster Schritt?', options: ['Den Computer sofort neu starten', 'Den Vorfall unverzüglich dem Incident Management Team oder der IT-Hotline melden', 'Versuchen, den Virus selbst mit einer heruntergeladenen Software zu entfernen'], correctAnswerIndex: 1, explanation: 'Bei einem Sicherheitsvorfall ist Zeit von entscheidender Bedeutung. Melden Sie den Vorfall sofort, damit Experten die richtigen Schritte einleiten und eine weitere Ausbreitung verhindern können.' },
+    { id: 'q23', questionText: 'Warum ist es wichtig, nach einem Sicherheitsvorfall nichts zu verändern (z.B. keine Dateien zu löschen)?', options: ['Das ist nicht wichtig', 'Um wichtige Spuren für die forensische Analyse nicht zu vernichten', 'Um zu sehen, was der Angreifer gemacht hat'], correctAnswerIndex: 1, explanation: 'Jede Veränderung am System kann digitale Beweise zerstören, die für die Aufklärung des Vorfalls und die Identifizierung des Angreifers entscheidend sind.' },
+    { id: 'q24', questionText: 'Was ist das Ziel des Incident Managements?', options: ['Den Schuldigen zu finden und zu bestrafen', 'Den normalen Geschäftsbetrieb so schnell wie möglich wiederherzustellen und den Schaden zu minimieren', 'Einen langen Bericht für die Geschäftsführung zu schreiben'], correctAnswerIndex: 1, explanation: 'Das Hauptziel ist die schnelle Eindämmung des Vorfalls, die Wiederherstellung der Systeme und die Minimierung der Auswirkungen auf das Geschäft.' },
+];
+
 
 // MODULES
 export const mockModules: Module[] = [
-  { id: 'phishing-awareness', title: 'Phishing-Bewusstsein', description: 'Lernen Sie, Phishing-Angriffe zu erkennen und zu vermeiden.', questions: phishingQuestions },
-  { id: 'password-security', title: 'Passwortsicherheit', description: 'Meistern Sie die Kunst, starke Passwörter zu erstellen und zu verwalten.', questions: passwordQuestions },
-  { id: 'data-protection', title: 'Grundlagen des Datenschutzes', description: 'Verstehen Sie Ihre Rolle beim Schutz von Unternehmens- und Kundendaten.', questions: dataProtectionQuestions },
-  { id: 'social-engineering', title: 'Social Engineering', description: 'Erkennen und verteidigen Sie sich gegen manipulative Taktiken.', questions: socialEngineeringQuestions },
-  { id: 'physical-security', title: 'Physische Sicherheit', description: 'Best Practices zur Sicherung Ihres Arbeitsplatzes und Ihrer Geräte.', questions: physicalSecurityQuestions },
-  { id: 'incident-response', title: 'Reaktion auf Vorfälle', description: 'Wissen, was bei einem Sicherheitsvorfall zu tun ist.', questions: incidentResponseQuestions },
+  { id: 'grundlagen-organisation', title: 'Grundlagen & Organisation', order: 1, description: 'Verstehen Sie die Grundlagen der Informationssicherheit und Ihre Rolle im Unternehmen.', questions: grundlagenQuestions },
+  { id: 'datenklassifizierung', title: 'Datenklassifizierung', order: 2, description: 'Lernen Sie, wie man Daten nach ihrer Sensibilität einstuft und angemessen schützt.', questions: datenklassifizierungQuestions },
+  { id: 'zugriffskontrolle-passwoerter', title: 'Zugriffskontrolle & Passwörter', order: 3, description: 'Meistern Sie den sicheren Umgang mit Passwörtern und Zugriffsrechten.', questions: zugriffskontrolleQuestions },
+  { id: 'betriebssicherheit', title: 'Betriebssicherheit', order: 4, description: 'Sichern Sie Ihren täglichen Arbeitsablauf und Ihre physische Umgebung ab.', questions: betriebssicherheitQuestions },
+  { id: 'netzwerk-email', title: 'Netzwerk & E-Mail', order: 5, description: 'Erkennen Sie Gefahren im Netzwerk und im Umgang mit E-Mails wie z.B. Phishing.', questions: netzwerkEmailQuestions },
+  { id: 'mobile-geraete-byod', title: 'Mobile Geräte & BYOD', order: 6, description: 'Sicherer Umgang mit Smartphones, Tablets und privaten Geräten im Firmenkontext.', questions: mobileGeraeteQuestions },
+  { id: 'kuenstliche-intelligenz', title: 'Künstliche Intelligenz', order: 7, description: 'Chancen und Risiken im Umgang mit KI-Werkzeugen wie ChatGPT.', questions: kiQuestions },
+  { id: 'incident-management', title: 'Incident Management', order: 8, description: 'Richtiges Verhalten bei einem Sicherheitsvorfall: Erkennen, Melden, Reagieren.', questions: incidentManagementQuestions },
 ];
 
 // USER PROGRESS
 export const mockUserProgress: UserProgress[] = [
   // Alex Müller's progress
-  { userId: 'user123', moduleId: 'phishing-awareness', status: 'Completed', score: 100, completedAt: new Date('2023-10-26') },
-  { userId: 'user123', moduleId: 'password-security', status: 'In Progress', score: 50, },
-  { userId: 'user123', moduleId: 'data-protection', status: 'Not Started', score: 0 },
-  { userId: 'user123', moduleId: 'social-engineering', status: 'Retake Required', score: 40 },
-  { userId: 'user123', moduleId: 'physical-security', status: 'Not Started', score: 0 },
-  { userId: 'user123', moduleId: 'incident-response', status: 'Not Started', score: 0 },
+  { userId: 'user123', moduleId: 'grundlagen-organisation', status: 'Completed', score: 100 },
+  { userId: 'user123', moduleId: 'datenklassifizierung', status: 'In Progress', score: 50 },
+  { userId: 'user123', moduleId: 'zugriffskontrolle-passwoerter', status: 'Not Started', score: 0 },
+  { userId: 'user123', moduleId: 'betriebssicherheit', status: 'Retake Required', score: 40 },
+  { userId: 'user123', moduleId: 'netzwerk-email', status: 'Not Started', score: 0 },
+  { userId: 'user123', moduleId: 'mobile-geraete-byod', status: 'Not Started', score: 0 },
+  { userId: 'user123', moduleId: 'kuenstliche-intelligenz', status: 'Not Started', score: 0 },
+  { userId: 'user123', moduleId: 'incident-management', status: 'Not Started', score: 0 },
 
   // Progress for other users for the admin dashboard
-  { userId: 'user001', moduleId: 'phishing-awareness', status: 'Completed', score: 100, completedAt: new Date('2024-01-15') },
-  { userId: 'user001', moduleId: 'password-security', status: 'Completed', score: 100, completedAt: new Date('2024-01-20') },
-  { userId: 'user002', moduleId: 'phishing-awareness', status: 'Completed', score: 100, completedAt: new Date('2024-02-01') },
-  { userId: 'user002', moduleId: 'password-security', status: 'In Progress', score: 50 },
-  { userId: 'user003', moduleId: 'phishing-awareness', status: 'Retake Required', score: 0 },
-  { userId: 'user004', moduleId: 'phishing-awareness', status: 'Completed', score: 100, completedAt: new Date('2024-03-10') },
-  { userId: 'user004', moduleId: 'password-security', status: 'Completed', score: 100, completedAt: new Date('2024-03-11') },
-  { userId: 'user004', moduleId: 'data-protection', status: 'Completed', score: 100, completedAt: new Date('2024-03-12') },
-  { userId: 'user004', moduleId: 'social-engineering', status: 'Completed', score: 100, completedAt: new Date('2024-03-13') },
-  { userId: 'user004', moduleId: 'physical-security', status: 'Completed', score: 100, completedAt: new Date('2024-03-14') },
-  { userId: 'user004', moduleId: 'incident-response', status: 'Completed', score: 100, completedAt: new Date('2024-03-15') },
-  { userId: 'user005', moduleId: 'phishing-awareness', status: 'Not Started', score: 0 },
+  { userId: 'user001', moduleId: 'grundlagen-organisation', status: 'Completed', score: 100 },
+  { userId: 'user001', moduleId: 'datenklassifizierung', status: 'Completed', score: 100 },
+  { userId: 'user002', moduleId: 'grundlagen-organisation', status: 'Completed', score: 100 },
+  { userId: 'user002', moduleId: 'datenklassifizierung', status: 'In Progress', score: 50 },
+  { userId: 'user003', moduleId: 'grundlagen-organisation', status: 'Retake Required', score: 0 },
+  { userId: 'user004', moduleId: 'grundlagen-organisation', status: 'Completed', score: 100 },
+  { userId: 'user004', moduleId: 'datenklassifizierung', status: 'Completed', score: 100 },
+  { userId: 'user004', moduleId: 'zugriffskontrolle-passwoerter', status: 'Completed', score: 100 },
+  { userId: 'user004', moduleId: 'betriebssicherheit', status: 'Completed', score: 100 },
+  { userId: 'user004', moduleId: 'netzwerk-email', status: 'Completed', score: 100 },
+  { userId: 'user004', moduleId: 'mobile-geraete-byod', status: 'Completed', score: 100 },
+  { userId: 'user005', moduleId: 'grundlagen-organisation', status: 'Not Started', score: 0 },
 ];
 
 
