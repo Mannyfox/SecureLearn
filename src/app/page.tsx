@@ -2,12 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { ApfelkisteLogo } from "@/components/apfelkiste-logo";
-import { useUser, useAuth as useFirebaseAuth, setDocumentNonBlocking } from "@/firebase";
+import { useUser, useAuth as useFirebaseAuth, setDocumentNonBlocking, useFirestore } from "@/firebase";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { signInAnonymously, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { doc, serverTimestamp } from "firebase/firestore";
-import { useFirestore } from "@/firebase";
+import { signInAnonymously } from "firebase/auth";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
 function GoogleIcon() {
   return (
@@ -25,20 +24,11 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (!isUserLoading && user) {
-      // Create user profile in Firestore if it doesn't exist
-      if (firestore && user.uid) {
-        const userRef = doc(firestore, "users", user.uid);
-        // We use set with merge to avoid overwriting existing data
-        setDocumentNonBlocking(userRef, {
-            id: user.uid,
-            email: user.email || 'anonym@apfelkiste.ch',
-            name: user.displayName || 'Anonymer Benutzer',
-            role: 'user', // default role
-            department: 'Technik', // default department
-            createdAt: serverTimestamp()
-        }, { merge: true });
+      if (firestore) {
+         // The user document creation is now handled in the login functions
+         // to ensure role is set correctly. We can still redirect here.
+         router.push('/dashboard');
       }
-      router.push('/dashboard');
     }
   }, [user, isUserLoading, router, firestore]);
 
@@ -49,9 +39,10 @@ export default function LoginPage() {
       const user = userCredential.user;
       
       const userRef = doc(firestore, "users", user.uid);
-      await setDocumentNonBlocking(userRef, {
+      // Use await here to ensure profile is created before redirect might happen
+      await setDoc(userRef, {
             id: user.uid,
-            email: 'anonym@apfelkiste.ch',
+            email: role === 'admin' ? `admin-${user.uid.substring(0,5)}@apfelkiste.ch` : `user-${user.uid.substring(0,5)}@apfelkiste.ch`,
             name: role === 'admin' ? 'Admin Benutzer' : 'Anonymer Benutzer',
             role: role,
             department: role === 'admin' ? 'Engineering' : 'Sales',
