@@ -1,29 +1,27 @@
 /**
  * @file Firestore Security Rules for SecureLearn Application (Prototyping Mode)
- * @version 2
+ * @version 3
  *
  * @description This ruleset enforces a strict user-ownership model for personal data while allowing public read access to module information.
- * All write operations are protected by authorization checks based on verified identity (request.auth).
+ * It also defines an admin role that can read across user data for administrative purposes.
  *
  * @dataStructure
- * - /users/{userId}: Stores user profile data, accessible only by the user themselves.
+ * - /users/{userId}: Stores user profile data, accessible only by the user themselves. Admins can read this data.
  * - /modules/{moduleId}: Stores module information, publicly readable but writeable only by admins (not implemented in this prototype).
  * - /settings/company-guidelines: Stores the company guidelines text, readable by any authenticated user, writeable by admins.
- * - /users/{userId}/moduleProgress/{moduleProgressId}: Stores user progress on modules, accessible only by the user themselves.
+ * - /users/{userId}/moduleProgress/{moduleProgressId}: Stores user progress on modules, accessible only by the user themselves. Admins have list access via collection group query.
  * - /modules/{moduleId}/quizQuestions/{questionId}: Stores quiz questions, accessible only by admins (not implemented in this prototype).
  * - /users/{userId}/quizResults/{quizResultId}: Stores user quiz results, accessible only by the user themselves.
  * - /users/{userId}/certificates/{certificateId}: Stores user certificates, accessible only by the user themselves.
  *
  * @keySecurityDecisions
- * - User data is strictly isolated and accessible only by the owning user.
- * - Module data is publicly readable to facilitate easy access for all users.
- * - Admin roles are not implemented in this prototype; all admin-only writes are disabled with TODO placeholders.
- * - List operations are allowed for owners on their subcollections to support client-side data listing.
+ * - User data is strictly isolated and accessible only by the owning user for write operations.
+ * - Admin role is introduced, allowing read access to all user profiles and list access to all module progress.
+ * - Collection group queries are secured to only be accessible by admins.
  *
  * @denormalizationForAuthorization
  * - The `UserModuleProgress` documents denormalize `userId` and `moduleId` to enable authorization checks without requiring additional `get()` calls.
- * - The `QuizQuestion` documents denormalize `moduleId` to enable authorization checks without requiring additional `get()` calls.
- * - The `UserQuizResult` documents denormalize `userId` and `moduleId` to enable authorization checks without requiring additional `get()` calls.
+ * - User profile documents contain a 'role' field used for admin authorization.
  *
  * @structuralSegregation
  * - User-specific data is stored under the `/users/{userId}` path, ensuring clear ownership and isolation.
@@ -33,28 +31,22 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    /**
-     * @description Enforces user-ownership for user profile data.
-     * @path /users/{userId}
-     * @allow (create) - User with UID 'user_abc' creates their profile at /users/user_abc.
-     * @allow (get) - User with UID 'user_abc' reads their profile at /users/user_abc.
-     * @allow (update) - User with UID 'user_abc' updates their profile at /users/user_abc.
-     * @allow (delete) - User with UID 'user_abc' deletes their profile at /users/user_abc.
-     * @deny (create) - User with UID 'user_xyz' attempts to create a profile at /users/user_abc.
-     * @deny (get) - User with UID 'user_xyz' attempts to read the profile at /users/user_abc.
-     * @principle Enforces document ownership for all operations.
-     */
-    match /users/{userId} {
-      function isOwner(userId) {
-        return request.auth.uid == userId;
-      }
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
 
-      function isExistingOwner(userId) {
+    function isExistingOwner(userId) {
         return isOwner(userId) && resource != null;
-      }
+    }
 
-      allow get: if isOwner(userId);
-      allow list: if false;
+    function isAdmin() {
+      // Admins can read any user's profile data.
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow list: if isAdmin(); // Only admins can list users.
       allow create: if isOwner(userId) && request.resource.data.id == userId;
       allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
       allow delete: if isExistingOwner(userId);
@@ -62,90 +54,41 @@ service cloud.firestore {
 
     match /settings/{docId} {
         allow read: if request.auth != null;
-        // TODO: Only allow admins to write
-        allow write: if request.auth != null;
+        allow write: if isAdmin();
     }
-
-    /**
-     * @description Allows public read access to module information, but restricts write access.
-     * @path /modules/{moduleId}
-     * @allow (get) - Any user can read module information at /modules/module_abc.
-     * @allow (list) - Any user can list modules.
-     * @deny (create) - Any user attempts to create a module at /modules/module_abc.
-     * @deny (update) - Any user attempts to update a module at /modules/module_abc.
-     * @principle Allows public read access with restricted write access (admin only, not implemented).
-     */
+    
     match /modules/{moduleId} {
       allow get: if true;
       allow list: if true;
-      allow create: if false; // TODO: Add admin role check for create
-      allow update: if false; // TODO: Add admin role check for update
-      allow delete: if false; // TODO: Add admin role check for delete
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
     }
 
-    /**
-     * @description Enforces user-ownership for user module progress data.
-     * @path /users/{userId}/moduleProgress/{moduleProgressId}
-     * @allow (create) - User with UID 'user_abc' creates progress data at /users/user_abc/moduleProgress/progress_123.
-     * @allow (get) - User with UID 'user_abc' reads their progress data at /users/user_abc/moduleProgress/progress_123.
-     * @allow (update) - User with UID 'user_abc' updates their progress data at /users/user_abc/moduleProgress/progress_123.
-     * @allow (delete) - User with UID 'user_abc' deletes their progress data at /users/user_abc/moduleProgress/progress_123.
-     * @deny (create) - User with UID 'user_xyz' attempts to create progress data at /users/user_abc/moduleProgress/progress_123.
-     * @deny (get) - User with UID 'user_xyz' attempts to read progress data at /users/user_abc/moduleProgress/progress_123.
-     * @principle Enforces document ownership for all operations, validates userId on create and update.
-     */
+    // Rule for the collection group query used by admins.
+    match /{path=**}/moduleProgress/{progressId} {
+      allow list: if isAdmin();
+    }
+
     match /users/{userId}/moduleProgress/{moduleProgressId} {
-      function isOwner(userId) {
-        return request.auth.uid == userId;
-      }
-
-      function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
-      }
-
       allow get: if isOwner(userId);
+      // 'list' is handled by the collection group rule for admins, 
+      // but we still need a rule for users querying their own progress.
       allow list: if isOwner(userId);
       allow create: if isOwner(userId) && request.resource.data.userId == userId;
       allow update: if isExistingOwner(userId) && request.resource.data.userId == resource.data.userId;
       allow delete: if isExistingOwner(userId);
     }
 
-    /**
-     * @description Restricts access to quiz questions to admins only.
-     * @path /modules/{moduleId}/quizQuestions/{questionId}
-     * @deny (get) - Any user attempts to read quiz question at /modules/module_abc/quizQuestions/question_123.
-     * @deny (create) - Any user attempts to create a quiz question at /modules/module_abc/quizQuestions/question_123.
-     * @deny (update) - Any user attempts to update a quiz question at /modules/module_abc/quizQuestions/question_123.
-     * @principle Admin-only access (not implemented in this prototype).
-     */
     match /modules/{moduleId}/quizQuestions/{questionId} {
-      allow get: if false;  // TODO: Add admin role check for read
-      allow list: if false; // TODO: Add admin role check for list
-      allow create: if false; // TODO: Add admin role check for create
-      allow update: if false; // TODO: Add admin role check for update
-      allow delete: if false; // TODO: Add admin role check for delete
+      allow get: if isAdmin();
+      allow list: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
     }
 
-    /**
-     * @description Enforces user-ownership for user quiz result data.
-     * @path /users/{userId}/quizResults/{quizResultId}
-     * @allow (create) - User with UID 'user_abc' creates quiz result data at /users/user_abc/quizResults/result_123.
-     * @allow (get) - User with UID 'user_abc' reads their quiz result data at /users/user_abc/quizResults/result_123.
-     * @allow (update) - User with UID 'user_abc' updates their quiz result data at /users/user_abc/quizResults/result_123.
-     * @allow (delete) - User with UID 'user_abc' deletes their quiz result data at /users/user_abc/quizResults/result_123.
-     * @deny (create) - User with UID 'user_xyz' attempts to create quiz result data at /users/user_abc/quizResults/result_123.
-     * @deny (get) - User with UID 'user_xyz' attempts to read quiz result data at /users/user_abc/quizResults/result_123.
-     * @principle Enforces document ownership for all operations, validates userId on create and update.
-     */
     match /users/{userId}/quizResults/{quizResultId} {
-      function isOwner(userId) {
-        return request.auth.uid == userId;
-      }
-
-      function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
-      }
-
       allow get: if isOwner(userId);
       allow list: if isOwner(userId);
       allow create: if isOwner(userId) && request.resource.data.userId == userId;
@@ -153,26 +96,7 @@ service cloud.firestore {
       allow delete: if isExistingOwner(userId);
     }
 
-    /**
-     * @description Enforces user-ownership for user certificate data.
-     * @path /users/{userId}/certificates/{certificateId}
-     * @allow (create) - User with UID 'user_abc' creates certificate data at /users/user_abc/certificates/cert_123.
-     * @allow (get) - User with UID 'user_abc' reads their certificate data at /users/user_abc/certificates/cert_123.
-     * @allow (update) - User with UID 'user_abc' updates their certificate data at /users/user_abc/certificates/cert_123.
-     * @allow (delete) - User with UID 'user_abc' deletes their certificate data at /users/user_abc/certificates/cert_123.
-     * @deny (create) - User with UID 'user_xyz' attempts to create certificate data at /users/user_abc/certificates/cert_123.
-     * @deny (get) - User with UID 'user_xyz' attempts to read certificate data at /users/user_abc/certificates/cert_123.
-     * @principle Enforces document ownership for all operations, validates userId on create and update.
-     */
     match /users/{userId}/certificates/{certificateId} {
-      function isOwner(userId) {
-        return request.auth.uid == userId;
-      }
-
-      function isExistingOwner(userId) {
-        return isOwner(userId) && resource != null;
-      }
-
       allow get: if isOwner(userId);
       allow list: if isOwner(userId);
       allow create: if isOwner(userId) && request.resource.data.userId == userId;
