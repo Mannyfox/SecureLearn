@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 
 import { cn } from "@/lib/utils"
 import type { User } from "@/lib/types"
-import { Award, BarChart2, BookOpen, ShieldCheck, Users } from "lucide-react"
+import { Award, BarChart2, BookOpen, FileText, ShieldCheck, Users } from "lucide-react"
 
 interface MainNavProps {
   user: User | null
@@ -47,6 +47,12 @@ export function MainNav({ user }: MainNavProps) {
       label: "Fragen-CMS",
       icon: ShieldCheck,
       active: pathname.startsWith("/dashboard/admin/questions"),
+    },
+    {
+      href: "/dashboard/admin/guidelines",
+      label: "Richtlinien",
+      icon: FileText,
+      active: pathname.startsWith("/dashboard/admin/guidelines"),
     },
   ]
 
