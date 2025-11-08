@@ -17,28 +17,27 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { useUser, useAuth as useFirebaseAuth } from "@/firebase";
 import { useRouter } from "next/navigation"
+import type { User as UserProfile } from "@/lib/types";
 
-export function UserNav() {
+interface UserNavProps {
+    userProfile: UserProfile;
+}
+
+export function UserNav({ userProfile }: UserNavProps) {
   const { user } = useUser();
   const auth = useFirebaseAuth();
   const router = useRouter()
   
   const handleLogout = async () => {
-    await auth.signOut();
+    if (auth) {
+        await auth.signOut();
+    }
     router.push('/');
   }
   
-  if (!user) return null
+  if (!user || !userProfile) return null;
 
-  // NOTE: A mock user object is created here for display purposes.
-  // In a real app, you would fetch a user profile from Firestore.
-   const displayUser = {
-      id: user.uid,
-      name: user.isAnonymous ? 'Anonymer Benutzer' : user.email || 'Benutzer',
-      email: user.email || 'anonym@apfelkiste.ch',
-      role: 'user', // This should be determined by custom claims in a real app
-      avatarUrl: user.photoURL || `https://i.pravatar.cc/150?u=${user.uid}`
-  }
+  const displayUser = userProfile;
 
   const initials = displayUser.name
     .split(" ")

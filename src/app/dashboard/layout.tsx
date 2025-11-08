@@ -2,7 +2,7 @@
 
 import { MainNav } from "@/components/main-nav";
 import { UserNav } from "@/components/user-nav";
-import { useUser } from "@/firebase";
+import { useUser, useFirestore, useDoc, useMemoFirebase } from "@/firebase";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ApfelkisteLogo } from "@/components/apfelkiste-logo";
@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { doc } from "firebase/firestore";
+import type { User as UserProfile } from "@/lib/types";
 
 export default function DashboardLayout({
   children,
@@ -19,7 +21,11 @@ export default function DashboardLayout({
 }) {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
+  const firestore = useFirestore();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const userProfileRef = useMemoFirebase(() => (firestore && user) ? doc(firestore, 'users', user.uid) : null, [firestore, user]);
+  const { data: userProfile, isLoading: isProfileLoading } = useDoc<UserProfile>(userProfileRef);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -27,7 +33,9 @@ export default function DashboardLayout({
     }
   }, [user, isUserLoading, router]);
   
-  if (isUserLoading || !user) {
+  const isLoading = isUserLoading || isProfileLoading;
+
+  if (isLoading || !user) {
      return (
       <div className="flex min-h-screen w-full">
         <div className="hidden md:block w-72 border-r p-4 space-y-4">
@@ -43,14 +51,13 @@ export default function DashboardLayout({
       </div>
     );
   }
-
-  // NOTE: A mock user object is created here for display purposes.
-  // In a real app, you would fetch a user profile from Firestore.
+  
   const displayUser = {
       id: user.uid,
-      name: user.isAnonymous ? 'Anonymer Benutzer' : user.email || 'Benutzer',
-      email: user.email || 'anonym@apfelkiste.ch',
-      role: 'user', // This should be determined by custom claims in a real app
+      name: userProfile?.name || user.displayName || 'Benutzer',
+      email: userProfile?.email || user.email || 'anonym@apfelkiste.ch',
+      role: userProfile?.role || 'user',
+      department: userProfile?.department || 'Technik',
       avatarUrl: user.photoURL || `https://i.pravatar.cc/150?u=${user.uid}`
   }
 
@@ -98,7 +105,7 @@ export default function DashboardLayout({
           <div className="w-full flex-1">
             {/* Can add a global search here in the future */}
           </div>
-          <UserNav />
+          <UserNav userProfile={displayUser} />
         </header>
         <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-background">
           {children}

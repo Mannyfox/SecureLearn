@@ -7,6 +7,7 @@ export interface User {
   department: 'Sales' | 'Engineering' | 'Marketing' | 'HR' | 'Vertrieb' | 'Technik' | 'Personal';
   role: 'user' | 'admin';
   avatarUrl?: string;
+  createdAt?: Timestamp;
 }
 
 export interface Question {
