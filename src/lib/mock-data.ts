@@ -30,23 +30,23 @@ export const otherUsers: User[] = [
 
 // QUESTIONS
 const phishingQuestions: Question[] = [
-  { id: 'q1', questionText: 'Which of these is a common sign of a phishing email?', options: ['A generic greeting like "Dear Customer"', 'An email from your boss', 'A request to reset your password'], correctAnswerIndex: 0, explanation: 'Phishing emails often use generic greetings because they are sent to many people at once.' },
-  { id: 'q2', questionText: 'What should you do if you receive a suspicious email with a link?', options: ['Click the link to see where it goes', 'Delete the email and do nothing', 'Do not click the link and report it to IT'], correctAnswerIndex: 2, explanation: 'Never click links in suspicious emails. Always report them to your IT department for investigation.' },
+  { id: 'q1', questionText: 'Was ist ein häufiges Anzeichen für eine Phishing-E-Mail?', options: ['Eine generische Begrüßung wie "Sehr geehrter Kunde"', 'Eine E-Mail von Ihrem Chef', 'Eine Aufforderung, Ihr Passwort zurückzusetzen'], correctAnswerIndex: 0, explanation: 'Phishing-E-Mails verwenden oft generische Begrüßungen, da sie an viele Personen gleichzeitig gesendet werden.' },
+  { id: 'q2', questionText: 'Was sollten Sie tun, wenn Sie eine verdächtige E-Mail mit einem Link erhalten?', options: ['Auf den Link klicken, um zu sehen, wohin er führt', 'Die E-Mail löschen und nichts tun', 'Nicht auf den Link klicken und ihn der IT-Abteilung melden'], correctAnswerIndex: 2, explanation: 'Klicken Sie niemals auf Links in verdächtigen E-Mails. Melden Sie diese immer Ihrer IT-Abteilung zur Untersuchung.' },
 ];
 
 const passwordQuestions: Question[] = [
-  { id: 'q3', questionText: 'What is the best practice for creating a strong password?', options: ['Using your pet\'s name', 'A long phrase with a mix of characters, numbers, and symbols', 'A short, easy-to-remember word'], correctAnswerIndex: 1, explanation: 'Strong passwords are long and complex, making them harder to guess or crack.' },
-  { id: 'q4', questionText: 'How often should you ideally change your main work password?', options: ['Never', 'Every 90 days', 'Every day'], correctAnswerIndex: 1, explanation: 'Regularly changing passwords minimizes the risk if your password is ever compromised.' },
+  { id: 'q3', questionText: 'Was ist die beste Methode, um ein starkes Passwort zu erstellen?', options: ['Den Namen Ihres Haustiers verwenden', 'Eine lange Phrase mit einer Mischung aus Zeichen, Zahlen und Symbolen', 'Ein kurzes, leicht zu merkendes Wort'], correctAnswerIndex: 1, explanation: 'Starke Passwörter sind lang und komplex, was es schwieriger macht, sie zu erraten oder zu knacken.' },
+  { id: 'q4', questionText: 'Wie oft sollten Sie idealerweise Ihr Hauptarbeitspasswort ändern?', options: ['Niemals', 'Alle 90 Tage', 'Jeden Tag'], correctAnswerIndex: 1, explanation: 'Regelmäßiges Ändern von Passwörtern minimiert das Risiko, falls Ihr Passwort jemals kompromittiert wird.' },
 ];
 
 // MODULES
 export const mockModules: Module[] = [
-  { id: 'phishing-awareness', title: 'Phishing Awareness', description: 'Learn to identify and avoid phishing attacks.', questions: phishingQuestions },
-  { id: 'password-security', title: 'Password Security', description: 'Master the art of creating and managing strong passwords.', questions: passwordQuestions },
-  { id: 'data-protection', title: 'Data Protection Basics', description: 'Understand your role in protecting company and customer data.', questions: phishingQuestions }, // Re-using for demo
-  { id: 'social-engineering', title: 'Social Engineering', description: 'Recognize and defend against manipulative tactics.', questions: passwordQuestions }, // Re-using for demo
-  { id: 'physical-security', title: 'Physical Security', description: 'Best practices for securing your workspace and devices.', questions: phishingQuestions }, // Re-using for demo
-  { id: 'incident-response', title: 'Incident Response', description: 'Know what to do when a security incident occurs.', questions: passwordQuestions }, // Re-using for demo
+  { id: 'phishing-awareness', title: 'Phishing-Bewusstsein', description: 'Lernen Sie, Phishing-Angriffe zu erkennen und zu vermeiden.', questions: phishingQuestions },
+  { id: 'password-security', title: 'Passwortsicherheit', description: 'Meistern Sie die Kunst, starke Passwörter zu erstellen und zu verwalten.', questions: passwordQuestions },
+  { id: 'data-protection', title: 'Grundlagen des Datenschutzes', description: 'Verstehen Sie Ihre Rolle beim Schutz von Unternehmens- und Kundendaten.', questions: phishingQuestions }, // Re-using for demo
+  { id: 'social-engineering', title: 'Social Engineering', description: 'Erkennen und verteidigen Sie sich gegen manipulative Taktiken.', questions: passwordQuestions }, // Re-using for demo
+  { id: 'physical-security', title: 'Physische Sicherheit', description: 'Best Practices zur Sicherung Ihres Arbeitsplatzes und Ihrer Geräte.', questions: phishingQuestions }, // Re-using for demo
+  { id: 'incident-response', title: 'Reaktion auf Vorfälle', description: 'Wissen, was bei einem Sicherheitsvorfall zu tun ist.', questions: passwordQuestions }, // Re-using for demo
 ];
 
 // USER PROGRESS

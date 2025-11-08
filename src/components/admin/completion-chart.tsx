@@ -34,8 +34,8 @@ export function CompletionChart({ progressData }: CompletionChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Module Completion Rates</CardTitle>
-        <CardDescription>Percentage of users who have completed each module.</CardDescription>
+        <CardTitle>Modul-Abschlussquoten</CardTitle>
+        <CardDescription>Prozentsatz der Benutzer, die jedes Modul abgeschlossen haben.</CardDescription>
       </CardHeader>
       <CardContent>
         <ResponsiveContainer width="100%" height={350}>

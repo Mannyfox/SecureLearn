@@ -50,21 +50,20 @@ export function UserNav() {
             <p className="text-sm font-medium leading-none">{user.name}</p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}
-            </p>
-          </div>
+            </p>          </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem>
-            Profile
+            Profil
           </DropdownMenuItem>
           <DropdownMenuItem>
-            Settings
+            Einstellungen
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
-          Log out
+          Abmelden
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

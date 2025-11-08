@@ -15,10 +15,10 @@ export function AnnualReminderBanner({ isExpired }: AnnualReminderBannerProps) {
   return (
     <Alert variant="destructive" className="mb-6">
       <AlertCircle className="h-4 w-4" />
-      <AlertTitle>Action Required: Recertification Needed</AlertTitle>
+      <AlertTitle>Aktion erforderlich: Rezertifizierung notwendig</AlertTitle>
       <AlertDescription className="flex items-center justify-between">
-        <p>Your annual security training certificate has expired. Please complete all modules to issue a new certificate.</p>
-        <Button variant="destructive">Start Recertification</Button>
+        <p>Ihr jährliches Sicherheitsschulungszertifikat ist abgelaufen. Bitte schließen Sie alle Module ab, um ein neues Zertifikat auszustellen.</p>
+        <Button variant="destructive">Rezertifizierung starten</Button>
       </AlertDescription>
     </Alert>
   )

@@ -33,7 +33,7 @@ export default function LoginPage() {
             Apfelkiste SecureLearn
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Please sign in to access your security training.
+            Bitte melden Sie sich an, um auf Ihre Sicherheitsschulung zuzugreifen.
           </p>
         </div>
         <div className="space-y-4">
@@ -44,7 +44,7 @@ export default function LoginPage() {
             className="w-full text-base"
           >
             <GoogleIcon />
-            Sign In as User
+            Als Benutzer anmelden
           </Button>
           <Button 
             onClick={() => login('admin')} 
@@ -53,11 +53,11 @@ export default function LoginPage() {
             className="w-full text-base"
           >
             <GoogleIcon />
-            Sign In as Admin
+            Als Admin anmelden
           </Button>
         </div>
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          By signing in, you agree to our Terms of Service.
+          Mit der Anmeldung stimmen Sie unseren Nutzungsbedingungen zu.
         </p>
       </div>
     </div>

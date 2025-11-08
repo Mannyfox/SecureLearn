@@ -17,13 +17,13 @@ export function MainNav({ user }: MainNavProps) {
   const routes = [
     {
       href: "/dashboard",
-      label: "My Training",
+      label: "Meine Schulung",
       icon: BookOpen,
       active: pathname === "/dashboard",
     },
     {
       href: "/dashboard/certificate",
-      label: "Certificate",
+      label: "Zertifikat",
       icon: Award,
       active: pathname === "/dashboard/certificate",
     },
@@ -32,19 +32,19 @@ export function MainNav({ user }: MainNavProps) {
   const adminRoutes = [
     {
       href: "/dashboard/admin/overview",
-      label: "Overview",
+      label: "Übersicht",
       icon: BarChart2,
       active: pathname.startsWith("/dashboard/admin/overview"),
     },
     {
       href: "/dashboard/admin/users",
-      label: "User Management",
+      label: "Benutzerverwaltung",
       icon: Users,
       active: pathname.startsWith("/dashboard/admin/users"),
     },
     {
       href: "/dashboard/admin/questions",
-      label: "Question CMS",
+      label: "Fragen-CMS",
       icon: ShieldCheck,
       active: pathname.startsWith("/dashboard/admin/questions"),
     },

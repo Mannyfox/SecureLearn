@@ -18,10 +18,10 @@ export default function AdminOverviewPage() {
     return (
         <div className="space-y-6">
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <StatsCard title="Total Users" value={totalUsers.toString()} icon={Users} description="All registered users"/>
-                <StatsCard title="Total Modules" value={totalModules.toString()} icon={ShieldCheck} description="Available training modules"/>
-                <StatsCard title="Completion Rate" value={`${overallCompletion.toFixed(1)}%`} icon={Target} description="Overall module completion"/>
-                <StatsCard title="Active This Month" value="85%" icon={TrendingUp} description="+10% from last month"/>
+                <StatsCard title="Benutzer gesamt" value={totalUsers.toString()} icon={Users} description="Alle registrierten Benutzer"/>
+                <StatsCard title="Module gesamt" value={totalModules.toString()} icon={ShieldCheck} description="Verfügbare Schulungsmodule"/>
+                <StatsCard title="Abschlussquote" value={`${overallCompletion.toFixed(1)}%`} icon={Target} description="Gesamtabschluss der Module"/>
+                <StatsCard title="Aktiv diesen Monat" value="85%" icon={TrendingUp} description="+10% zum letzten Monat"/>
             </div>
             <CompletionChart progressData={mockUserProgress} />
         </div>

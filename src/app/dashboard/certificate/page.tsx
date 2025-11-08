@@ -26,13 +26,13 @@ export default function CertificatePage() {
     return (
       <div className="flex flex-col items-center justify-center text-center space-y-4 rounded-lg border border-dashed p-10">
         <Lock className="h-12 w-12 text-muted-foreground" />
-        <h2 className="text-2xl font-bold font-headline">Certificate Locked</h2>
+        <h2 className="text-2xl font-bold font-headline">Zertifikat gesperrt</h2>
         <p className="text-muted-foreground max-w-md">
-          You must complete all training modules to unlock your certificate.
-          You have completed {completedCount} out of {totalCount} modules.
+          Sie müssen alle Schulungsmodule abschließen, um Ihr Zertifikat freizuschalten.
+          Sie haben {completedCount} von {totalCount} Modulen abgeschlossen.
         </p>
         <Button asChild>
-          <a href="/dashboard">Return to Dashboard</a>
+          <a href="/dashboard">Zum Dashboard zurückkehren</a>
         </Button>
       </div>
     )
@@ -41,8 +41,8 @@ export default function CertificatePage() {
   return (
     <div>
         <div className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight font-headline">Your Certificate</h1>
-            <p className="text-muted-foreground">Congratulations on completing your annual security training.</p>
+            <h1 className="text-3xl font-bold tracking-tight font-headline">Ihr Zertifikat</h1>
+            <p className="text-muted-foreground">Herzlichen Glückwunsch zum Abschluss Ihrer jährlichen Sicherheitsschulung.</p>
         </div>
         <CertificateDisplay user={user} certificate={certificate} />
     </div>

@@ -55,17 +55,17 @@ export function QuizClient({ module }: QuizClientProps) {
     return (
         <Card className="w-full max-w-2xl">
             <CardHeader>
-                <CardTitle className="text-2xl">Quiz Completed!</CardTitle>
-                <CardDescription>Module: {module.title}</CardDescription>
+                <CardTitle className="text-2xl">Quiz abgeschlossen!</CardTitle>
+                <CardDescription>Modul: {module.title}</CardDescription>
             </CardHeader>
             <CardContent className="text-center space-y-4">
-                <p className="text-lg">Your Score:</p>
+                <p className="text-lg">Ihre Punktzahl:</p>
                 <p className="text-6xl font-bold text-primary">{finalScore.toFixed(0)}%</p>
-                <p className="text-muted-foreground">{score} out of {module.questions.length} correct</p>
+                <p className="text-muted-foreground">{score} von {module.questions.length} richtig</p>
             </CardContent>
             <CardFooter>
                 <Button asChild className="w-full">
-                    <a href="/dashboard">Back to Dashboard</a>
+                    <a href="/dashboard">Zurück zum Dashboard</a>
                 </Button>
             </CardFooter>
         </Card>
@@ -77,7 +77,7 @@ export function QuizClient({ module }: QuizClientProps) {
         <Progress value={progressPercentage} className="w-full"/>
         <Card>
           <CardHeader>
-            <CardTitle>Question {currentQuestionIndex + 1} of {module.questions.length}</CardTitle>
+            <CardTitle>Frage {currentQuestionIndex + 1} von {module.questions.length}</CardTitle>
             <CardDescription className="text-lg pt-2">{currentQuestion.questionText}</CardDescription>
           </CardHeader>
           <CardContent>
@@ -103,17 +103,17 @@ export function QuizClient({ module }: QuizClientProps) {
           </CardContent>
           <CardFooter className="flex flex-col items-stretch gap-4">
             {answerState === 'unanswered' ? (
-              <Button onClick={handleCheckAnswer} disabled={selectedAnswer === null}>Check Answer</Button>
+              <Button onClick={handleCheckAnswer} disabled={selectedAnswer === null}>Antwort prüfen</Button>
             ) : (
               <Button onClick={handleNextQuestion}>
-                {currentQuestionIndex < module.questions.length - 1 ? 'Next Question' : 'Finish Quiz'}
+                {currentQuestionIndex < module.questions.length - 1 ? 'Nächste Frage' : 'Quiz beenden'}
               </Button>
             )}
 
             {answerState === 'correct' && (
               <Alert className="border-green-500 text-green-700 dark:border-green-600 dark:text-green-400">
                 <CheckCircle2 className="h-4 w-4" />
-                <AlertTitle>Correct!</AlertTitle>
+                <AlertTitle>Richtig!</AlertTitle>
                 <AlertDescription>{currentQuestion.explanation}</AlertDescription>
               </Alert>
             )}
@@ -121,7 +121,7 @@ export function QuizClient({ module }: QuizClientProps) {
             {answerState === 'incorrect' && (
               <Alert variant="destructive">
                 <XCircle className="h-4 w-4" />
-                <AlertTitle>Incorrect</AlertTitle>
+                <AlertTitle>Falsch</AlertTitle>
                 <AlertDescription>{currentQuestion.explanation}</AlertDescription>
               </Alert>
             )}

@@ -61,19 +61,19 @@ export function QuestionEditor({ modules: initialModules }: QuestionEditorProps)
                   <DialogTrigger asChild>
                     <Button>
                       <PlusCircle className="mr-2 h-4 w-4" />
-                      Add Question
+                      Frage hinzufügen
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-[425px]">
                     <DialogHeader>
-                      <DialogTitle>{editingQuestion ? "Edit Question" : "Add New Question"}</DialogTitle>
+                      <DialogTitle>{editingQuestion ? "Frage bearbeiten" : "Neue Frage hinzufügen"}</DialogTitle>
                       <DialogDescription>
-                        {editingQuestion ? "Modify the details of this question." : "Fill in the details for the new question."}
+                        {editingQuestion ? "Ändern Sie die Details dieser Frage." : "Füllen Sie die Details für die neue Frage aus."}
                       </DialogDescription>
                     </DialogHeader>
                     <form onSubmit={handleAddOrUpdateQuestion} className="grid gap-4 py-4">
                        <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="questionText" className="text-right">Question</Label>
+                        <Label htmlFor="questionText" className="text-right">Frage</Label>
                         <Textarea id="questionText" defaultValue={editingQuestion?.question.questionText} className="col-span-3" />
                       </div>
                        <div className="grid grid-cols-4 items-center gap-4">
@@ -89,15 +89,15 @@ export function QuestionEditor({ modules: initialModules }: QuestionEditorProps)
                         <Input id="option3" defaultValue={editingQuestion?.question.options[2]} className="col-span-3" />
                       </div>
                        <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="correctAnswer" className="text-right">Correct (1-3)</Label>
+                        <Label htmlFor="correctAnswer" className="text-right">Korrekt (1-3)</Label>
                         <Input id="correctAnswer" type="number" min="1" max="3" defaultValue={editingQuestion ? editingQuestion.question.correctAnswerIndex + 1 : 1} className="col-span-3" />
                       </div>
                        <div className="grid grid-cols-4 items-center gap-4">
-                        <Label htmlFor="explanation" className="text-right">Explanation</Label>
+                        <Label htmlFor="explanation" className="text-right">Erklärung</Label>
                         <Textarea id="explanation" defaultValue={editingQuestion?.question.explanation} className="col-span-3" />
                       </div>
                       <DialogFooter>
-                        <Button type="submit">Save Question</Button>
+                        <Button type="submit">Frage speichern</Button>
                       </DialogFooter>
                     </form>
                   </DialogContent>
@@ -106,8 +106,8 @@ export function QuestionEditor({ modules: initialModules }: QuestionEditorProps)
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Question</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
+                    <TableHead>Frage</TableHead>
+                    <TableHead className="text-right">Aktionen</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

@@ -21,7 +21,7 @@ export default function DashboardPage() {
     return userProgress.find(p => p.moduleId === moduleId) || {
       userId: user.id,
       moduleId,
-      status: 'Not Started',
+      status: 'Nicht begonnen',
       score: 0,
     };
   };
@@ -29,8 +29,8 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight font-headline">Welcome back, {user.name.split(' ')[0]}!</h1>
-        <p className="text-muted-foreground">Here are your assigned security training modules. Please complete them to receive your certificate.</p>
+        <h1 className="text-3xl font-bold tracking-tight font-headline">Willkommen zurück, {user.name.split(' ')[0]}!</h1>
+        <p className="text-muted-foreground">Hier sind Ihre zugewiesenen Sicherheitsschulungsmodule. Bitte schließen Sie sie ab, um Ihr Zertifikat zu erhalten.</p>
       </div>
 
       <AnnualReminderBanner isExpired={user.id === 'user123' && isCertificateExpired} />

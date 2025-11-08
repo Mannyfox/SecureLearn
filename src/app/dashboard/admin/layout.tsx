@@ -4,9 +4,9 @@ import { usePathname, useRouter } from "next/navigation"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const adminTabs = [
-    { value: "overview", label: "Overview", href: "/dashboard/admin/overview" },
-    { value: "users", label: "User Management", href: "/dashboard/admin/users" },
-    { value: "questions", label: "Question CMS", href: "/dashboard/admin/questions" },
+    { value: "overview", label: "Übersicht", href: "/dashboard/admin/overview" },
+    { value: "users", label: "Benutzerverwaltung", href: "/dashboard/admin/users" },
+    { value: "questions", label: "Fragen-CMS", href: "/dashboard/admin/questions" },
 ]
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -24,8 +24,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="text-3xl font-bold tracking-tight font-headline">Admin Dashboard</h1>
-                <p className="text-muted-foreground">Manage users, training content, and view statistics.</p>
+                <h1 className="text-3xl font-bold tracking-tight font-headline">Admin-Dashboard</h1>
+                <p className="text-muted-foreground">Benutzer, Schulungsinhalte verwalten und Statistiken einsehen.</p>
             </div>
             <Tabs value={activeTab} onValueChange={onTabChange}>
                 <TabsList>

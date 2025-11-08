@@ -2,7 +2,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  department: 'Sales' | 'Engineering' | 'Marketing' | 'HR';
+  department: 'Sales' | 'Engineering' | 'Marketing' | 'HR' | 'Vertrieb' | 'Technik' | 'Personal';
   role: 'user' | 'admin';
   avatarUrl?: string;
 }
@@ -25,7 +25,7 @@ export interface Module {
 export interface UserProgress {
   userId: string;
   moduleId: string;
-  status: 'Not Started' | 'In Progress' | 'Completed' | 'Retake Required';
+  status: 'Not Started' | 'In Progress' | 'Completed' | 'Retake Required' | 'Nicht begonnen' | 'In Bearbeitung' | 'Abgeschlossen' | 'Wiederholung erforderlich';
   score: number; // Percentage
   completedAt?: Date;
 }

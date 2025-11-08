@@ -33,10 +33,10 @@ export function UsersTableClient({ users, progress }: UsersTableClientProps) {
 
   const getOverallStatus = (userId: string) => {
     const userProgress = progress.filter(p => p.userId === userId)
-    if (userProgress.length === 0) return <Badge variant="secondary">Not Started</Badge>
-    if (userProgress.some(p => p.status === 'Retake Required')) return <Badge variant="destructive">Retake Required</Badge>
-    if (userProgress.every(p => p.status === 'Completed')) return <Badge className="bg-green-600 text-white">Completed</Badge>
-    return <Badge variant="outline">In Progress</Badge>
+    if (userProgress.length === 0) return <Badge variant="secondary">Nicht begonnen</Badge>
+    if (userProgress.some(p => p.status === 'Retake Required')) return <Badge variant="destructive">Wiederholung erforderlich</Badge>
+    if (userProgress.every(p => p.status === 'Completed')) return <Badge className="bg-green-600 text-white">Abgeschlossen</Badge>
+    return <Badge variant="outline">In Bearbeitung</Badge>
   }
 
   const filteredUsers = users
@@ -50,7 +50,7 @@ export function UsersTableClient({ users, progress }: UsersTableClientProps) {
 
   const handleExport = () => {
     // In a real app, this would trigger a server action to generate and download a CSV.
-    alert("Exporting data... (This is a placeholder)");
+    alert("Daten werden exportiert... (Dies ist ein Platzhalter)");
   }
 
   return (
@@ -59,7 +59,7 @@ export function UsersTableClient({ users, progress }: UsersTableClientProps) {
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search by name or email..."
+            placeholder="Suche nach Name oder E-Mail..."
             className="pl-8"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -67,19 +67,19 @@ export function UsersTableClient({ users, progress }: UsersTableClientProps) {
         </div>
         <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filter by department" />
+            <SelectValue placeholder="Nach Abteilung filtern" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Departments</SelectItem>
-            <SelectItem value="Sales">Sales</SelectItem>
-            <SelectItem value="Engineering">Engineering</SelectItem>
+            <SelectItem value="all">Alle Abteilungen</SelectItem>
+            <SelectItem value="Sales">Vertrieb</SelectItem>
+            <SelectItem value="Engineering">Technik</SelectItem>
             <SelectItem value="Marketing">Marketing</SelectItem>
-            <SelectItem value="HR">HR</SelectItem>
+            <SelectItem value="HR">Personal</SelectItem>
           </SelectContent>
         </Select>
         <Button onClick={handleExport} variant="outline">
           <Download className="mr-2 h-4 w-4" />
-          Export to Excel
+          Nach Excel exportieren
         </Button>
       </div>
       <div className="rounded-md border">
@@ -88,8 +88,8 @@ export function UsersTableClient({ users, progress }: UsersTableClientProps) {
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
-              <TableHead>Department</TableHead>
-              <TableHead>Overall Status</TableHead>
+              <TableHead>Abteilung</TableHead>
+              <TableHead>Gesamtstatus</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

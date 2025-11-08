@@ -22,24 +22,29 @@ interface ModuleCardProps {
 
 const statusInfo = {
   'Completed': {
-    badge: <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-800">Completed</Badge>,
+    badge: <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-800">Abgeschlossen</Badge>,
     icon: <CheckCircle2 className="h-5 w-5 text-green-600" />,
-    buttonText: 'Review',
+    buttonText: 'Überprüfen',
   },
   'In Progress': {
-    badge: <Badge variant="outline">In Progress</Badge>,
+    badge: <Badge variant="outline">In Bearbeitung</Badge>,
     icon: <PlayCircle className="h-5 w-5 text-blue-600" />,
-    buttonText: 'Continue',
+    buttonText: 'Fortsetzen',
   },
   'Not Started': {
-    badge: <Badge variant="secondary">Not Started</Badge>,
+    badge: <Badge variant="secondary">Nicht begonnen</Badge>,
     icon: <PlayCircle className="h-5 w-5 text-gray-500" />,
-    buttonText: 'Start Module',
+    buttonText: 'Modul starten',
   },
   'Retake Required': {
-    badge: <Badge variant="destructive">Retake Required</Badge>,
+    badge: <Badge variant="destructive">Wiederholung erforderlich</Badge>,
     icon: <RefreshCw className="h-5 w-5 text-red-600" />,
-    buttonText: 'Retake Module',
+    buttonText: 'Modul wiederholen',
+  },
+  'Nicht begonnen': {
+    badge: <Badge variant="secondary">Nicht begonnen</Badge>,
+    icon: <PlayCircle className="h-5 w-5 text-gray-500" />,
+    buttonText: 'Modul starten',
   },
 }
 
@@ -71,7 +76,7 @@ export function ModuleCard({ module, progress }: ModuleCardProps) {
       </CardContent>
       <CardFooter className="flex flex-col items-start gap-4 p-6 pt-0">
         <div>
-          <p className="text-sm font-medium mb-1">Progress</p>
+          <p className="text-sm font-medium mb-1">Fortschritt</p>
           <Progress value={progress.score} className="w-full h-2" />
         </div>
         <Button asChild className="w-full">
