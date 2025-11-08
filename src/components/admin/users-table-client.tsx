@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Download, Search } from "lucide-react"
+import { format, isBefore } from "date-fns"
 
 interface UsersTableClientProps {
   users: User[]
@@ -37,6 +38,17 @@ export function UsersTableClient({ users, progress }: UsersTableClientProps) {
     if (userProgress.some(p => p.status === 'Retake Required')) return <Badge variant="destructive">Wiederholung erforderlich</Badge>
     if (userProgress.every(p => p.status === 'Completed')) return <Badge className="bg-green-600 text-white">Abgeschlossen</Badge>
     return <Badge variant="outline">In Bearbeitung</Badge>
+  }
+  
+  const getLatestCompletionDate = (userId: string) => {
+    const userProgress = progress.filter(p => p.userId === userId && p.status === 'Completed' && p.completedAt)
+    if (userProgress.length === 0) return '-'
+
+    const latestDate = userProgress.reduce((latest, p) => {
+        return isBefore(latest, p.completedAt!) ? p.completedAt! : latest
+    }, userProgress[0].completedAt!)
+
+    return format(latestDate, "dd.MM.yyyy")
   }
 
   const filteredUsers = users
@@ -90,6 +102,7 @@ export function UsersTableClient({ users, progress }: UsersTableClientProps) {
               <TableHead>Email</TableHead>
               <TableHead>Abteilung</TableHead>
               <TableHead>Gesamtstatus</TableHead>
+              <TableHead>Zuletzt abgeschlossen</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -99,6 +112,7 @@ export function UsersTableClient({ users, progress }: UsersTableClientProps) {
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{user.department}</TableCell>
                 <TableCell>{getOverallStatus(user.id)}</TableCell>
+                <TableCell>{getLatestCompletionDate(user.id)}</TableCell>
               </TableRow>
             ))}
           </TableBody>

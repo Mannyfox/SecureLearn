@@ -52,7 +52,7 @@ export const mockModules: Module[] = [
 // USER PROGRESS
 export const mockUserProgress: UserProgress[] = [
   // Alex Müller's progress
-  { userId: 'user123', moduleId: 'phishing-awareness', status: 'Completed', score: 100, completedAt: new Date() },
+  { userId: 'user123', moduleId: 'phishing-awareness', status: 'Completed', score: 100, completedAt: new Date('2023-10-26') },
   { userId: 'user123', moduleId: 'password-security', status: 'In Progress', score: 50, },
   { userId: 'user123', moduleId: 'data-protection', status: 'Not Started', score: 0 },
   { userId: 'user123', moduleId: 'social-engineering', status: 'Retake Required', score: 40 },
@@ -60,17 +60,17 @@ export const mockUserProgress: UserProgress[] = [
   { userId: 'user123', moduleId: 'incident-response', status: 'Not Started', score: 0 },
 
   // Progress for other users for the admin dashboard
-  { userId: 'user001', moduleId: 'phishing-awareness', status: 'Completed', score: 100 },
-  { userId: 'user001', moduleId: 'password-security', status: 'Completed', score: 100 },
-  { userId: 'user002', moduleId: 'phishing-awareness', status: 'Completed', score: 100 },
+  { userId: 'user001', moduleId: 'phishing-awareness', status: 'Completed', score: 100, completedAt: new Date('2024-01-15') },
+  { userId: 'user001', moduleId: 'password-security', status: 'Completed', score: 100, completedAt: new Date('2024-01-20') },
+  { userId: 'user002', moduleId: 'phishing-awareness', status: 'Completed', score: 100, completedAt: new Date('2024-02-01') },
   { userId: 'user002', moduleId: 'password-security', status: 'In Progress', score: 50 },
   { userId: 'user003', moduleId: 'phishing-awareness', status: 'Retake Required', score: 0 },
-  { userId: 'user004', moduleId: 'phishing-awareness', status: 'Completed', score: 100 },
-  { userId: 'user004', moduleId: 'password-security', status: 'Completed', score: 100 },
-  { userId: 'user004', moduleId: 'data-protection', status: 'Completed', score: 100 },
-  { userId: 'user004', moduleId: 'social-engineering', status: 'Completed', score: 100 },
-  { userId: 'user004', moduleId: 'physical-security', status: 'Completed', score: 100 },
-  { userId: 'user004', moduleId: 'incident-response', status: 'Completed', score: 100 },
+  { userId: 'user004', moduleId: 'phishing-awareness', status: 'Completed', score: 100, completedAt: new Date('2024-03-10') },
+  { userId: 'user004', moduleId: 'password-security', status: 'Completed', score: 100, completedAt: new Date('2024-03-11') },
+  { userId: 'user004', moduleId: 'data-protection', status: 'Completed', score: 100, completedAt: new Date('2024-03-12') },
+  { userId: 'user004', moduleId: 'social-engineering', status: 'Completed', score: 100, completedAt: new Date('2024-03-13') },
+  { userId: 'user004', moduleId: 'physical-security', status: 'Completed', score: 100, completedAt: new Date('2024-03-14') },
+  { userId: 'user004', moduleId: 'incident-response', status: 'Completed', score: 100, completedAt: new Date('2024-03-15') },
   { userId: 'user005', moduleId: 'phishing-awareness', status: 'Not Started', score: 0 },
 ];
 
