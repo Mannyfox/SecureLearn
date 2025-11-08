@@ -79,6 +79,7 @@ export function QuestionEditor({ modules: initialModules, policyTextForGeneratio
         formData.get('option1') as string,
         formData.get('option2') as string,
         formData.get('option3') as string,
+        formData.get('option4') as string,
       ],
       correctAnswerIndex: parseInt(formData.get('correctAnswer') as string) - 1,
       explanation: formData.get('explanation') as string,
@@ -263,8 +264,12 @@ export function QuestionEditor({ modules: initialModules, policyTextForGeneratio
                             <Input id="option3" name="option3" defaultValue={editingQuestion?.question.options[2]} className="col-span-3" />
                           </div>
                            <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="correctAnswer" className="text-right">Korrekt (1-3)</Label>
-                            <Input id="correctAnswer" name="correctAnswer" type="number" min="1" max="3" defaultValue={editingQuestion ? editingQuestion.question.correctAnswerIndex + 1 : 1} className="col-span-3" />
+                            <Label htmlFor="option4" className="text-right">Option 4</Label>
+                            <Input id="option4" name="option4" defaultValue={editingQuestion?.question.options[3]} className="col-span-3" />
+                          </div>
+                           <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="correctAnswer" className="text-right">Korrekt (1-4)</Label>
+                            <Input id="correctAnswer" name="correctAnswer" type="number" min="1" max="4" defaultValue={editingQuestion ? editingQuestion.question.correctAnswerIndex + 1 : 1} className="col-span-3" />
                           </div>
                            <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="explanation" className="text-right">Erklärung</Label>

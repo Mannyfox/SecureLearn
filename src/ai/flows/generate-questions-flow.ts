@@ -25,13 +25,13 @@ const QuestionSchema = z.object({
   questionText: z.string().describe('The text of the question.'),
   options: z
     .array(z.string())
-    .length(3)
-    .describe('An array of exactly three possible answers.'),
+    .length(4)
+    .describe('An array of exactly four possible answers.'),
   correctAnswerIndex: z
     .number()
     .min(0)
-    .max(2)
-    .describe('The index (0, 1, or 2) of the correct answer in the options array.'),
+    .max(3)
+    .describe('The index (0, 1, 2, or 3) of the correct answer in the options array.'),
   explanation: z
     .string()
     .describe(
@@ -62,8 +62,8 @@ const prompt = ai.definePrompt({
 
   Follow these instructions carefully:
   1.  Generate between 3 and 5 distinct questions.
-  2.  For each question, provide exactly three possible options.
-  3.  One of the options must be the correct answer.
+  2.  For each question, provide exactly four possible options.
+  3.  One of the options must be the correct answer. The other three should be plausible distractors.
   4.  Indicate the index of the correct answer.
   5.  Provide a clear and concise explanation for why the answer is correct.
   6.  The questions should cover different key concepts from the document.
