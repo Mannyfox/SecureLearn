@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { useFirestore, useDoc, useMemoFirebase } from "@/firebase";
 import { doc } from "firebase/firestore";
 import type { Module } from "@/lib/types";
+import { use } from "react";
 
 interface ModulePageProps {
     params: {
@@ -13,8 +14,9 @@ interface ModulePageProps {
 }
 
 export default function ModulePage({ params }: ModulePageProps) {
+  const { id } = params; // Parameters are not promises in client components.
   const firestore = useFirestore();
-  const moduleRef = useMemoFirebase(() => firestore ? doc(firestore, "modules", params.id) : null, [firestore, params.id]);
+  const moduleRef = useMemoFirebase(() => firestore ? doc(firestore, "modules", id) : null, [firestore, id]);
   const { data: module, isLoading } = useDoc<Module>(moduleRef);
 
   if (isLoading) {
