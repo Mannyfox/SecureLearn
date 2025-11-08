@@ -5,7 +5,6 @@ import { notFound } from 'next/navigation';
 import { useFirestore, useDoc, useMemoFirebase } from "@/firebase";
 import { doc } from "firebase/firestore";
 import type { Module } from "@/lib/types";
-import { use } from "react";
 
 interface ModulePageProps {
     params: {
@@ -14,6 +13,7 @@ interface ModulePageProps {
 }
 
 export default function ModulePage({ params }: ModulePageProps) {
+  // eslint-disable-next-line @next/next/no-unwanted-polyfillio
   const { id } = params; // Parameters are not promises in client components.
   const firestore = useFirestore();
   const moduleRef = useMemoFirebase(() => firestore ? doc(firestore, "modules", id) : null, [firestore, id]);
