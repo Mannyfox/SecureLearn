@@ -3,7 +3,7 @@
 import { StatsCard } from "@/components/admin/stats-card"
 import { CompletionChart } from "@/components/admin/completion-chart"
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, doc, writeBatch, serverTimestamp } from "firebase/firestore";
+import { collection, doc, writeBatch } from "firebase/firestore";
 import type { Module, User, UserProgress } from "@/lib/types";
 import { Users, ShieldCheck, Target, TrendingUp, Database } from "lucide-react"
 import { Button } from "@/components/ui/button";
