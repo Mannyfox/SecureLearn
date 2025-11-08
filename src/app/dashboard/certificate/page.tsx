@@ -25,19 +25,20 @@ export default function CertificatePage() {
     return <div>Laden...</div>;
   }
   
-  const allModulesCompleted = userProgress && modules && userProgress.length === modules.length && userProgress.every(p => p.status === 'Abgeschlossen');
+  const allModulesCompleted = userProgress && modules && modules.length > 0 && userProgress.length === modules.length && userProgress.every(p => p.status === 'Abgeschlossen');
   
   const displayUser = {
       id: user.uid,
       name: user.isAnonymous ? 'Anonymer Benutzer' : user.email || 'Benutzer',
       email: user.email || 'anonym@apfelkiste.ch',
-      role: 'user',
+      department: 'N/A', // This info comes from the user's profile doc, not the auth user
+      role: 'user', // Same as above
       avatarUrl: user.photoURL || `https://i.pravatar.cc/150?u=${user.uid}`
   }
 
   if (!allModulesCompleted || !certificate) {
     const completedCount = userProgress?.filter(p => p.status === 'Abgeschlossen').length || 0;
-    const totalCount = modules.length;
+    const totalCount = modules.length || 0;
 
     return (
       <div className="flex flex-col items-center justify-center text-center space-y-4 rounded-lg border border-dashed p-10">

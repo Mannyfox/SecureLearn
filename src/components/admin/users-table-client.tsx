@@ -47,7 +47,8 @@ export function UsersTableClient({ users, progress }: UsersTableClientProps) {
     if (userProgress.length === 0) return '-'
 
     const latestDate = userProgress.reduce((latest, p) => {
-        const pDate = p.completedAt?.toDate();
+        // Ensure completedAt exists and has toDate method before calling it
+        const pDate = p.completedAt?.toDate ? p.completedAt.toDate() : null;
         if (!pDate) return latest;
         return isBefore(latest, pDate) ? pDate : latest
     }, new Date(0))

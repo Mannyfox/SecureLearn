@@ -3,7 +3,7 @@
 import { StatsCard } from "@/components/admin/stats-card"
 import { CompletionChart } from "@/components/admin/completion-chart"
 import { useCollection, useFirestore, useMemoFirebase } from "@/firebase";
-import { collection, doc, writeBatch } from "firebase/firestore";
+import { collection, doc, writeBatch, serverTimestamp } from "firebase/firestore";
 import type { Module, User, UserProgress } from "@/lib/types";
 import { Users, ShieldCheck, Target, TrendingUp, Database } from "lucide-react"
 import { Button } from "@/components/ui/button";
@@ -32,9 +32,14 @@ export default function AdminOverviewPage() {
 
         const batch = writeBatch(firestore);
 
-        mockModules.forEach(module => {
-            const moduleRef = doc(firestore, "modules", module.id);
-            batch.set(moduleRef, module);
+        mockModules.forEach(moduleData => {
+            const moduleRef = doc(firestore, "modules", moduleData.id);
+            // Ensure questions property is initialized as an empty array
+            const fullModule: Module = {
+                ...moduleData,
+                questions: []
+            };
+            batch.set(moduleRef, fullModule);
         });
 
         try {
@@ -43,7 +48,7 @@ export default function AdminOverviewPage() {
                 title: "Datenbank initialisiert!",
                 description: `${mockModules.length} Module wurden erfolgreich in die Datenbank geschrieben.`
             });
-            // You might want to force a refresh of the modules collection data here
+            // The useCollection hook will automatically refresh the data
         } catch (error) {
             console.error("Error seeding database:", error);
             toast({
@@ -83,19 +88,19 @@ export default function AdminOverviewPage() {
                     <CardHeader>
                         <CardTitle>Datenbank initialisieren</CardTitle>
                         <CardDescription>
-                            Ihre Firestore-Datenbank enthält noch keine Schulungsmodule. Klicken Sie auf die Schaltfläche, um die Beispieldaten zu laden.
+                            Ihre Firestore-Datenbank enthält noch keine Schulungsmodule. Klicken Sie auf die Schaltfläche, um die leeren Modulstrukturen zu erstellen. Fragen können Sie im "Fragen-CMS"-Tab hinzufügen.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Button onClick={handleSeedDatabase}>
                             <Database className="mr-2" />
-                            Beispieldaten laden
+                            Modul-Grundgerüst laden
                         </Button>
                     </CardContent>
                 </Card>
             )}
 
-            <CompletionChart progressData={userProgress || []} modules={modules || []}/>
+            {modules && modules.length > 0 && <CompletionChart progressData={userProgress || []} modules={modules || []}/>}
         </div>
     )
 }

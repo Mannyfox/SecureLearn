@@ -41,32 +41,12 @@ const statusInfo = {
     icon: <RefreshCw className="h-5 w-5 text-red-600" />,
     buttonText: 'Modul wiederholen',
   },
-  // Fallbacks for English statuses if they slip through
-  'Completed': {
-    badge: <Badge className="bg-green-100 text-green-800 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-800">Abgeschlossen</Badge>,
-    icon: <CheckCircle2 className="h-5 w-5 text-green-600" />,
-    buttonText: 'Überprüfen',
-  },
-  'In Progress': {
-    badge: <Badge variant="outline">In Bearbeitung</Badge>,
-    icon: <PlayCircle className="h-5 w-5 text-blue-600" />,
-    buttonText: 'Fortsetzen',
-  },
-  'Not Started': {
-    badge: <Badge variant="secondary">Nicht begonnen</Badge>,
-    icon: <PlayCircle className="h-5 w-5 text-gray-500" />,
-    buttonText: 'Modul starten',
-  },
-  'Retake Required': {
-    badge: <Badge variant="destructive">Wiederholung erforderlich</Badge>,
-    icon: <RefreshCw className="h-5 w-5 text-red-600" />,
-    buttonText: 'Modul wiederholen',
-  }
 }
 
 export function ModuleCard({ module, progress }: ModuleCardProps) {
-  const { badge, buttonText } = statusInfo[progress.status]
-  const image = PlaceHolderImages.find(img => img.id === module.id)
+  // Fallback for unexpected statuses
+  const currentStatusInfo = statusInfo[progress.status] || statusInfo['Nicht begonnen'];
+  const image = PlaceHolderImages.find(img => img.id === module.id) ?? PlaceHolderImages[0];
 
   return (
     <Card className="flex flex-col overflow-hidden">
@@ -86,7 +66,7 @@ export function ModuleCard({ module, progress }: ModuleCardProps) {
       <CardContent className="flex-grow p-6 space-y-3">
         <div className="space-y-2">
             <CardTitle className="text-xl font-headline leading-snug">{module.title}</CardTitle>
-            {badge}
+            {currentStatusInfo.badge}
         </div>
         <CardDescription>{module.description}</CardDescription>
       </CardContent>
@@ -94,13 +74,13 @@ export function ModuleCard({ module, progress }: ModuleCardProps) {
         <div className="w-full">
           <div className="flex justify-between items-center mb-1">
             <p className="text-sm font-medium">Fortschritt</p>
-            <p className="text-sm font-semibold text-primary">{progress.score}%</p>
+            <p className="text-sm font-semibold text-primary">{progress.score || 0}%</p>
           </div>
-          <Progress value={progress.score} className="h-2" />
+          <Progress value={progress.score || 0} className="h-2" />
         </div>
         <Button asChild className="w-full">
           <Link href={`/dashboard/modules/${module.id}`}>
-            {buttonText}
+            {currentStatusInfo.buttonText}
           </Link>
         </Button>
       </CardFooter>
